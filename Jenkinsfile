@@ -4,6 +4,10 @@ pipeline {
     //     NODE_VERSION = '16' // Specify NodeJS version for Angular
     //     DOCKER_REGISTRY = 'your-docker-registry-url' // e.g., Docker Hub
     // }
+    tools {
+        maven "Maven3.9.9"
+        jdk "JDK21"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -22,7 +26,7 @@ pipeline {
         // }
         stage('Build Backend') {
             steps {
-                dir('backend') {
+                dir('Backend') {
                     // Build Spring Boot application
                     sh './mvnw clean package'
                 }
