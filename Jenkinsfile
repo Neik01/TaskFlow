@@ -28,10 +28,10 @@ pipeline {
             steps {
                 dir('Backend') {
                     // Build Spring Boot application
-                    sh 'which mvn'
+                    sh 'whoami'
                     sh  'ls -l $(which mvn)'
-                    // sh 'chmod +r '
-                    // sh './mvnw clean package'
+                    
+                    sh './mvnw clean package'
                 }
             }
         }
