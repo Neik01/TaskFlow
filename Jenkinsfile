@@ -31,7 +31,7 @@ pipeline {
                     sh 'whoami'
                     sh  'ls -l $(which mvn)'
                     
-                    sh 'mvnw clean package'
+                    sh 'mvn clean package'
                 }
             }
         }
