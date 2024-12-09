@@ -20,14 +20,14 @@ pipeline {
         //         }
         //     }
         // }
-        // stage('Build Backend') {
-        //     steps {
-        //         dir('backend') {
-        //             // Build Spring Boot application
-        //             sh './mvnw clean package'
-        //         }
-        //     }
-        // }
+        stage('Build Backend') {
+            steps {
+                dir('backend') {
+                    // Build Spring Boot application
+                    sh './mvnw clean package'
+                }
+            }
+        }
         // stage('Run Tests') {
         //     parallel {
         //         stage('Frontend Tests') {
