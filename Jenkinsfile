@@ -71,16 +71,16 @@ pipeline {
         //     }
         // }
     }
-    // post {
-    //     always {
-    //         // Cleanup or notify
-    //         echo 'Pipeline finished'
-    //     }
+    post {
+        always {
+            // Cleanup or notify
+            echo 'Pipeline finished'
+        }
     //     success {
     //         echo 'Deployment successful!'
     //     }
     //     failure {
     //         echo 'Deployment failed!'
     //     }
-    // }
+    }
 }
