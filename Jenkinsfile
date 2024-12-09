@@ -28,7 +28,7 @@ pipeline {
             steps {
                 dir('Backend') {
                     // Build Spring Boot application
-                    sh 'whoami'
+                    sh 'chmod +x mvnw'
                     sh  'ls -l $(which mvnw)'
                     
                     sh './mvnw clean package'
