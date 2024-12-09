@@ -29,9 +29,9 @@ pipeline {
                 dir('Backend') {
                     // Build Spring Boot application
                     sh 'whoami'
-                    sh  'ls -l $(which mvn)'
+                    sh  'ls -l $(which mvnw)'
                     
-                    sh 'mvn clean package'
+                    sh './mvnw clean package'
                 }
             }
         }
