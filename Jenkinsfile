@@ -1,15 +1,15 @@
 pipeline {
     agent any
-    // environment {
-    //     NODE_VERSION = '16' // Specify NodeJS version for Angular
-    //     DOCKER_REGISTRY = 'your-docker-registry-url' // e.g., Docker Hub
-    // }
+    environment {
+       
+        FRONTEND_IMAGE = "taskflow-frontend"
+        BACKEND_IMAGE = 'taskflow-backend'
+        DOCKER_USERNAME = 'ntkitn'
+    }
     tools {
         maven "Maven3.9.9"
         jdk "JDK21"
-        FRONTEND_IMAGE = 'taskflow-frontend'
-        BACKEND_IMAGE = 'taskflow-backend'
-        DOCKER_USERNAME = 'ntkitn'
+     
     }
     stages {
         stage('Checkout') {
