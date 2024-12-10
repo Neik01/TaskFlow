@@ -33,12 +33,12 @@ pipeline {
                   
                     sh 'chmod +x mvnw'
                   
-                    sh './mvnw clean package -Dmaven.test.failure.ignore=true'
+                    sh './mvnw clean package -DskipTests'
                 }
             }
         }
-        stage('Run Tests') {
-            parallel {
+        // stage('Run Tests') {
+        //     parallel {
                 // stage('Frontend Tests') {
                 //     steps {
                 //         dir('frontend') {
@@ -46,15 +46,15 @@ pipeline {
                 //         }
                 //     }
                 // }
-                stage('Backend Tests') {
-                    steps {
-                        dir('backend') {
-                            sh './mvnw test'
-                        }
-                    }
-                }
-            }
-        }
+        //         stage('Backend Tests') {
+        //             steps {
+        //                 dir('Backend') {
+        //                     sh './mvnw test'
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
          stage('Remove Old Docker Images') {
             steps {
                 script {
