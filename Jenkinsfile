@@ -27,11 +27,13 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('Backend') {
+                    sh 'echo $JAVA_HOME'
+                    sh 'java -version'
                     // Build Spring Boot application
                     sh 'chmod +x mvnw'
                     sh  'ls -l $(which java)'
                     
-                    sh './mvnw clean package'
+                    // sh './mvnw clean package'
                 }
             }
         }
