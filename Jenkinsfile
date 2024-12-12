@@ -5,7 +5,7 @@ pipeline {
         FRONTEND_IMAGE = "taskflow-frontend"
         BACKEND_IMAGE = 'taskflow-backend'
         DOCKER_USERNAME = 'ntkitn'
-        PATH = "$PATH:/usr/local/bin"
+        PATH = "$PATH:/usr/local/bin/docker-compose"
     }
     tools {
         maven "Maven3.9.9"
