@@ -77,7 +77,7 @@ pipeline {
                 sh 'docker build -t ${DOCKER_USERNAME}/${BACKEND_IMAGE}:latest Backend'
                 // Push images to registry
                 // sh 'docker push ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest'
-                sh 'docker push $${DOCKER_USERNAME}/${BACKEND_IMAGE}:latest'
+                sh 'docker push ${DOCKER_USERNAME}/${BACKEND_IMAGE}:latest'
             }
         }
         stage('Deploy') {
