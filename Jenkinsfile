@@ -71,7 +71,7 @@ pipeline {
         // }
         stage('Dockerize Application') {
             steps {
-               withCredentials([credentialsId:'dockerhub',url:'']){
+               withDockerRegistry([credentialsId:'dockerhub',url:'']){
     // Build Docker images for frontend and backend
                 // sh 'docker build -t ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest frontend'
                 sh 'docker build -t ${DOCKER_USERNAME}/${BACKEND_IMAGE}:latest Backend'
