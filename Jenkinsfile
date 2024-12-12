@@ -58,10 +58,8 @@ pipeline {
          stage('Remove Old Docker Images') {
             steps {
                 script {
-                    sh '''
-                    docker images -q ${DOCKER_USERNAME}/${FRONTEND_IMAGE} | xargs -r docker rmi -f
-                    docker images -q ${DOCKER_USERNAME}/${BACKEND_IMAGE} | xargs -r docker rmi -f
-                    '''
+                    // sh 'docker images -q ${DOCKER_USERNAME}/${FRONTEND_IMAGE} | xargs -r docker rmi -f'
+                    sh 'docker images -q ${DOCKER_USERNAME}/${BACKEND_IMAGE} | xargs -r docker rmi -f'   
                 }
             }
         }
@@ -75,10 +73,10 @@ pipeline {
             steps {
                
                 // Build Docker images for frontend and backend
-                sh 'docker build -t ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest frontend'
+                // sh 'docker build -t ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest frontend'
                 sh 'docker build -t ${DOCKER_USERNAME}/${BACKEND_IMAGE}:latest backend'
                 // Push images to registry
-                sh 'docker push ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest'
+                // sh 'docker push ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest'
                 sh 'docker push $${DOCKER_USERNAME}/${BACKEND_IMAGE}:latest'
             }
         }
