@@ -5,7 +5,7 @@ pipeline {
         FRONTEND_IMAGE = "taskflow-frontend"
         BACKEND_IMAGE = 'taskflow-backend'
         DOCKER_USERNAME = 'ntkitn'
-        PATH = "/usr/local/bin:$PATH"
+        PATH = "${env.PATH}:/usr/local/bin"
     }
     tools {
         maven "Maven3.9.9"
@@ -88,7 +88,7 @@ pipeline {
                 // Deploy to staging/production using Docker or other deployment tools
                 echo 'Deploying to environment'
                 // Example: Docker Compose for multi-container app
-                sh 'docker-compose -f docker-compose.yml up -d'
+                sh 'docker compose -f docker-compose.yml up -d'
             }
         }
     }
