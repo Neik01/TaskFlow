@@ -1,9 +1,7 @@
 package com.ntk.TaskFlow.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -12,25 +10,15 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class Task {
+public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String title;
+    private String name;
 
     @Lob
     private String description;
-
-    @Enumerated(EnumType.STRING)
-    private TaskStatus status;
-
-    @Enumerated(EnumType.STRING)
-    private TaskPriority priority;
-
-    private LocalDateTime deadline;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -42,13 +30,13 @@ public class Task {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
-    private List<Collaborator> collaborators;
-
-    @ManyToMany(mappedBy = "tasks")
-    private List<Project> projects;
+    @ManyToMany
+    @JoinTable(
+        name = "task_projects",
+        joinColumns = @JoinColumn(name = "project_id"),
+        inverseJoinColumns = @JoinColumn(name = "task_id")
+    )
+    private List<Task> tasks;
 
     // Getters and setters
 }
-
-
