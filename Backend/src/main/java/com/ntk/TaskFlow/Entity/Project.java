@@ -3,6 +3,7 @@ package com.ntk.TaskFlow.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Project {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
 

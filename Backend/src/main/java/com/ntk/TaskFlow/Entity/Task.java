@@ -1,10 +1,12 @@
 package com.ntk.TaskFlow.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.logging.log4j.util.Lazy;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,14 +40,14 @@ public class Task {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Collaborator> collaborators;
 
-    @ManyToMany(mappedBy = "tasks")
+    @ManyToMany(mappedBy = "tasks",fetch = FetchType.LAZY)
     private List<Project> projects;
 
     // Getters and setters

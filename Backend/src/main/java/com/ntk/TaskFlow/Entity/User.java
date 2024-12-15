@@ -34,5 +34,7 @@ public class User {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Project> projects;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Collaborator> collaborators;
     // Getters and setters
 }

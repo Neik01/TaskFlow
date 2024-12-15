@@ -1,5 +1,5 @@
 package com.ntk.TaskFlow.Entity;
 
-enum TaskPriority {
+public enum TaskPriority {
     LOW, MEDIUM, HIGH
 }

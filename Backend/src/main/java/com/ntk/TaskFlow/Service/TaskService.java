@@ -23,11 +23,11 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Optional<Task> getTaskById(Long id) {
+    public Optional<Task> getTaskById(int id) {
         return taskRepository.findById(id);
     }
 
-    public void deleteTask(Long id) {
+    public void deleteTask(int id) {
         taskRepository.deleteById(id);
     }
 }
