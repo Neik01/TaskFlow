@@ -1,0 +1,96 @@
+<div class="fixed left-0 h-full w-64 m-0 flex flex-col bg-[#CDC1FF] border-r-2 shadow-lg">
+    <div class="w-full flex justify-between mb-3">
+        <div class="relative inline-block ">
+            <!-- Button with Name and Dropdown Arrow -->
+            <button
+              class="flex items-center space-x-2 px-4 py-2 rounded-md hover:bg-gray-100"
+              (click)="toggleMenu()">
+              <div class="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                K
+              </div>
+              <span class="text-gray-800 font-medium">kien</span>
+        
+              <span>
+                <!-- Arrow Icon -->
+                <svg
+                  [ngClass]="{'rotate-180': isMenuOpen}"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 transition-transform"
+                  viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
+                </svg>
+              </span>
+            </button>
+        
+            <!-- Submenu Dropdown -->
+            <div
+              *ngIf="isMenuOpen"
+              class="absolute ml-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+              <ul>
+                <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Profile</li>
+                <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Settings</li>
+                <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Logout</li>
+              </ul>
+            </div>
+        
+        </div>
+        <div class="mt-2 mr-2">
+            <button
+            (click)="close()"
+            class="text-gray-500 hover:text-red-500 focus:outline-none text-center ">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+                  </button>
+        </div>
+    </div>
+   
+    <ul class="px-4">
+        <li class="hover:bg-gray-100 rounded-md cursor-pointer flex p-2">
+            <div class="mr-2 items-center">
+                <svg class="size-6" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>plus-circle</title> <desc>Created with Sketch Beta.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"> <g id="Icon-Set-Filled" sketch:type="MSLayerGroup" transform="translate(-466.000000, -1089.000000)" fill="#C62E2E"> <path d="M488,1106 L483,1106 L483,1111 C483,1111.55 482.553,1112 482,1112 C481.447,1112 481,1111.55 481,1111 L481,1106 L476,1106 C475.447,1106 475,1105.55 475,1105 C475,1104.45 475.447,1104 476,1104 L481,1104 L481,1099 C481,1098.45 481.447,1098 482,1098 C482.553,1098 483,1098.45 483,1099 L483,1104 L488,1104 C488.553,1104 489,1104.45 489,1105 C489,1105.55 488.553,1106 488,1106 L488,1106 Z M482,1089 C473.163,1089 466,1096.16 466,1105 C466,1113.84 473.163,1121 482,1121 C490.837,1121 498,1113.84 498,1105 C498,1096.16 490.837,1089 482,1089 L482,1089 Z" id="plus-circle" sketch:type="MSShapeGroup"> </path> </g> </g> </g></svg>
+                
+            </div>
+            Thêm nhiệm vụ 
+        </li>
+        <li class="hover:bg-gray-100 rounded-md cursor-pointer flex p-2">
+            <div class="mr-2 items-center">
+                <svg class="size-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M11 6C13.7614 6 16 8.23858 16 11M16.6588 16.6549L21 21M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+            </div>
+            Tìm kiếm
+        </li>
+        <li class="hover:bg-gray-100 rounded-md cursor-pointer flex p-2">
+            <div class="mr-2 items-center">
+                <svg class="size-6" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="2.88"> <defs> <style>.c{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;}</style> </defs> <g id="a"> <g> <path class="c" d="m21.9073,28.3333c0,2.5926,2.0741,4.6667,4.6667,4.6667s4.4938-2.0741,4.4938-4.6667v-4.6667c0-2.5926-2.0741-4.6667-4.4938-4.6667s-4.6667,2.0741-4.6667,4.6667v4.6667Z"></path> <g> <line class="c" x1="14.9322" y1="20.925" x2="18.4322" y2="19"></line> <line class="c" x1="18.4322" y1="19" x2="18.4322" y2="33"></line> </g> </g> </g> <g id="b"> <path class="c" d="m8.0988,7.8588c-1.0601,0-1.9194.8593-1.9194,1.9194v31.8025c0,1.06.8593,1.9193,1.9193,1.9193h31.8025c1.06,0,1.9193-.8592,1.9194-1.9192h0V9.7782c0-1.0601-.8593-1.9194-1.9194-1.9194H8.0988Z"></path> <line class="c" x1="12.8166" y1="10.258" x2="12.8166" y2="4.5"></line> <line class="c" x1="35.1834" y1="10.258" x2="35.1834" y2="4.5"></line> </g> </g><g id="SVGRepo_iconCarrier"> <defs> <style>.c{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;}</style> </defs> <g id="a"> <g> <path class="c" d="m21.9073,28.3333c0,2.5926,2.0741,4.6667,4.6667,4.6667s4.4938-2.0741,4.4938-4.6667v-4.6667c0-2.5926-2.0741-4.6667-4.4938-4.6667s-4.6667,2.0741-4.6667,4.6667v4.6667Z"></path> <g> <line class="c" x1="14.9322" y1="20.925" x2="18.4322" y2="19"></line> <line class="c" x1="18.4322" y1="19" x2="18.4322" y2="33"></line> </g> </g> </g> <g id="b"> <path class="c" d="m8.0988,7.8588c-1.0601,0-1.9194.8593-1.9194,1.9194v31.8025c0,1.06.8593,1.9193,1.9193,1.9193h31.8025c1.06,0,1.9193-.8592,1.9194-1.9192h0V9.7782c0-1.0601-.8593-1.9194-1.9194-1.9194H8.0988Z"></path> <line class="c" x1="12.8166" y1="10.258" x2="12.8166" y2="4.5"></line> <line class="c" x1="35.1834" y1="10.258" x2="35.1834" y2="4.5"></line> </g> </g></svg>
+            </div>
+            Đến hạn hôm nay
+        </li>
+        <li class="hover:bg-gray-100 rounded-md cursor-pointer flex p-2">
+            <div class="mr-2 items-center">
+                <svg class="size-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 9H21M7 3V5M17 3V5M6 12H8M11 12H13M16 12H18M6 15H8M11 15H13M16 15H18M6 18H8M11 18H13M16 18H18M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke="#000000" stroke-width="2" stroke-linecap="round"></path> </g></svg>
+            </div>
+            Sắp đến hạn
+        </li>
+
+        <li class="hover:bg-gray-100 rounded-md cursor-pointer flex p-2">
+            <div class="mr-2 items-center">
+                <svg class="size-6" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M0 3H16V1H0V3Z" fill="#000000"></path> <path d="M2 7H14V5H2V7Z" fill="#000000"></path> <path d="M4 11H12V9H4V11Z" fill="#000000"></path> <path d="M10 15H6V13H10V15Z" fill="#000000"></path> </g></svg>
+             </div>
+            Lọc
+        </li>
+
+    </ul>
+
+    <div class="mt-4 px-4 py-2 items-center justify-between inline-flex rounded-md hover:bg-gray-100 cursor-pointer" >
+        <div class="font-bold ">
+            Dự án
+        </div>
+        <div>
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 12H20M12 4V20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </div>
+    </div>
+</div>
