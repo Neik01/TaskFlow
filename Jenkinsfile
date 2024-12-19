@@ -10,7 +10,7 @@ pipeline {
     tools {
         maven "Maven3.9.9"
         jdk "JDK21"
-     
+        nodejs "Node18.20.5"
     }
     stages {
         stage('Checkout') {
