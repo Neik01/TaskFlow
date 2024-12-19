@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Build Frontend') {
             steps {
-                dir('Frontend') {
+                dir('Frontend/TaskFlow') {
                     // Install dependencies and build Angular app
                     sh 'pwd'
                     sh 'npm install'
