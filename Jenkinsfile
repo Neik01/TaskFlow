@@ -19,15 +19,15 @@ pipeline {
                 echo "first step"
             }
         }
-        // stage('Build Frontend') {
-        //     steps {
-        //         dir('frontend') {
-        //             // Install dependencies and build Angular app
-        //             sh 'npm install'
-        //             sh 'npm run build --prod'
-        //         }
-        //     }
-        // }
+        stage('Build Frontend') {
+            steps {
+                dir('Frontend') {
+                    // Install dependencies and build Angular app
+                    sh 'npm install'
+                    sh 'npm run build --prod'
+                }
+            }
+        }
         stage('Build Backend') {
             steps {
                 dir('Backend') {
