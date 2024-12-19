@@ -7,8 +7,8 @@ import { Component, ElementRef, HostListener } from '@angular/core';
 })
 export class SidebarComponent {
   isMenuOpen = false;
-  isModalOpen = false;
-
+  isCreateModalOpen = false;
+  isSearchModalOpen = false;
 
   constructor(private elementRef: ElementRef){}
 
@@ -28,11 +28,16 @@ export class SidebarComponent {
     
   }
 
-  openModal() {
-    this.isModalOpen = true;
+  openCreateModal() {
+    this.isCreateModalOpen = true;
+  }
+
+  openSearchModal(){
+    this.isSearchModalOpen = true;
   }
 
   closeModal() {
-    this.isModalOpen = false;
+    this.isCreateModalOpen = false;
+    this.isSearchModalOpen = false;
   }
 }

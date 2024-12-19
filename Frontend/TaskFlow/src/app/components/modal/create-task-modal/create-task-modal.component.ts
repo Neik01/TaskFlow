@@ -8,7 +8,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 export class CreateTaskModalComponent {
   @Output() close = new EventEmitter<void>();
   showDatePicker: boolean = false;
-
+  selectedPriority: string = '4';
   selectedDate: string = ''; // Will store selected date
   selectedTime: string = ''; // Will store selected time
   combinedDateTime: string =''
