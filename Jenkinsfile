@@ -23,6 +23,7 @@ pipeline {
             steps {
                 dir('Frontend') {
                     // Install dependencies and build Angular app
+                    sh 'pwd'
                     sh 'npm install'
                     sh 'npm run build --prod'
                 }
