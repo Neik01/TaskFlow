@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker ps -q| xargs -r docker stop'
-                    sh 'docker ps -aq| xargs docker rm'   
+                    sh 'docker ps -aq| xargs -r docker rm'   
                     sh 'docker images -q -f dangling=true | xargs -r docker rmi'
                     
                 }
