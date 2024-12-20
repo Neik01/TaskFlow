@@ -56,7 +56,7 @@ pipeline {
             steps {
                withDockerRegistry([credentialsId:'dockerhub',url:'']){
     // Build Docker images for frontend and backend
-                sh 'docker build -t ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest frontend'
+                sh 'docker build -t ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest Frontend/TaskFlow'
                 sh 'docker build -t ${DOCKER_USERNAME}/${BACKEND_IMAGE}:latest Backend'
                 // Push images to registry
                 sh 'docker push ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest'
