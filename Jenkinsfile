@@ -44,8 +44,8 @@ pipeline {
          stage('Remove Old Docker Images') {
             steps {
                 script {
-                    sh 'docker stop $(docker ps -q)'
-                    sh 'docker rm $(docker ps -aq)'   
+                    sh 'docker ps -q| xargs -r docker stop'
+                    sh 'docker ps -aq| xargs docker rm'   
                     sh 'docker images -q -f dangling=true | xargs -r docker rmi'
                     
                 }
