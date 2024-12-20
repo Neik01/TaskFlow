@@ -46,8 +46,8 @@ pipeline {
                 script {
                     sh 'docker stop $(docker ps -q)'
                     sh 'docker rm $(docker ps -aq)'   
-                    sh 'docker rmi $(docker images -q -f dangling=true)'
-                    sh 'docker rmi $(docker images -q)'
+                    sh 'docker images -q -f dangling=true | xargs -r docker rmi'
+                    
                 }
             }
         }
