@@ -39,46 +39,27 @@ pipeline {
                 }
             }
         }
-        // stage('Run Tests') {
-        //     parallel {
-                // stage('Frontend Tests') {
-                //     steps {
-                //         dir('frontend') {
-                //             sh 'npm test'
-                //         }
-                //     }
-                // }
-        //         stage('Backend Tests') {
-        //             steps {
-        //                 dir('Backend') {
-        //                     sh './mvnw test'
-        //                 }
-        //             }
-        //         }
-        //     }
+      
         // }
          stage('Remove Old Docker Images') {
             steps {
                 script {
-                    // sh 'docker images -q ${DOCKER_USERNAME}/${FRONTEND_IMAGE} | xargs -r docker rmi -f'
-                    sh 'docker images -q ${DOCKER_USERNAME}/${BACKEND_IMAGE} | xargs -r docker rmi -f'   
+                    sh 'docker stop $(docker ps -q)'
+                    sh 'docker rm $(docker ps -aq)'   
+                    sh 'docker rmi $(docker images -q -f dangling=true)'
+                    sh 'docker rmi $(docker images -q)'
                 }
             }
         }
-        // stage('Static Analysis') {
-        //     steps {
-        //         // Example: Run code quality tools (SonarQube, ESLint)
-        //         echo 'Performing static code analysis'
-        //     }
-        // }
+    
         stage('Dockerize Application') {
             steps {
                withDockerRegistry([credentialsId:'dockerhub',url:'']){
     // Build Docker images for frontend and backend
-                // sh 'docker build -t ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest frontend'
+                sh 'docker build -t ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest frontend'
                 sh 'docker build -t ${DOCKER_USERNAME}/${BACKEND_IMAGE}:latest Backend'
                 // Push images to registry
-                // sh 'docker push ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest'
+                sh 'docker push ${DOCKER_USERNAME}/${FRONTEND_IMAGE}:latest'
                 sh 'docker push ${DOCKER_USERNAME}/${BACKEND_IMAGE}:latest'
                }
             
