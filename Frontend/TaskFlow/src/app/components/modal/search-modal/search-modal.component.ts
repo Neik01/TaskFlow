@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search-modal',
@@ -7,15 +8,15 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class SearchModalComponent {
   filteredResults =''
-  searchQuery =''
+  searchKeyword =''
   @Output() close = new EventEmitter<void>();
 
-  filterResults(){
-
-  }
-
+  constructor(readonly router: Router){}
   onCancel() {
     this.close.emit();
   }
 
+  navigateToTaskSearch(){
+    this.router.navigateByUrl("/search/"+this.searchKeyword)
+  }
 }

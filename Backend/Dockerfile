@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-jammy AS builder
+FROM eclipse-temurin:21-jdk-alpine AS builder
 WORKDIR /opt/app
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
@@ -9,7 +9,7 @@ COPY ./src ./src
 RUN ./mvnw clean install -Dmaven.test.failure.ignore=true
 
 
-FROM eclipse-temurin:21-jre-jammy AS final
+FROM eclipse-temurin:21-jre-alpine AS final
 WORKDIR /opt/app
 EXPOSE 8080
 COPY --from=builder /opt/app/target/*.jar /opt/app/*.jar

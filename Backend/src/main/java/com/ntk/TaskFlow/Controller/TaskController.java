@@ -1,7 +1,9 @@
 package com.ntk.TaskFlow.Controller;
 
+import com.ntk.TaskFlow.DTO.Request.StatusAndPriorityFilter;
 import com.ntk.TaskFlow.DTO.TaskDTO;
 import com.ntk.TaskFlow.Entity.Task;
+import com.ntk.TaskFlow.Entity.TaskPriority;
 import com.ntk.TaskFlow.Mapper.ProjectMapper;
 import com.ntk.TaskFlow.Service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class TaskController {
 
     private final TaskService taskService;
@@ -45,5 +48,21 @@ public class TaskController {
     public ResponseEntity<Void> deleteTask(@PathVariable int id) {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<List<TaskDTO>> findTasksByTitleOrDescription(@PathVariable String keyword){
+
+        List<Task> result = this.taskService.findByTitleOrDescriptionContaining(keyword);
+
+        return new ResponseEntity<>(mapper.mapListTaskToListDTO(result),HttpStatus.OK);
+    }
+
+    @GetMapping("/filterByStatusAndPriority")
+    public ResponseEntity<List<TaskDTO>> findTasksByStatusAndPriority(StatusAndPriorityFilter filter){
+
+        List<Task> result = this.taskService.findByStatusAndPriority(filter.status(),filter.priority());
+
+        return new ResponseEntity<>(mapper.mapListTaskToListDTO(result),HttpStatus.OK);
     }
 }
