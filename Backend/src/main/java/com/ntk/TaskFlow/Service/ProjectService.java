@@ -15,8 +15,11 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
 
-    public Project createProject(Project project){
-        return this.projectRepository.save(project);
+    public Project createProject(String projectName,String projectDescription){
+        Project newProject = new Project();
+        newProject.setName(projectName);
+        newProject.setDescription(projectDescription);
+        return this.projectRepository.save(newProject);
     }
     public List<Project> getAllProjects() {
         return projectRepository.findAll();

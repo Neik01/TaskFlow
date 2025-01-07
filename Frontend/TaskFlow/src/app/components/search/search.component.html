@@ -1,21 +1,21 @@
 <div class="p-4">
-    <div class="flex space-x-2">
-        <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-max p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option [value]="this.filterStatus">Tất cả</option>
-            <option [value]="this.filterStatus">Đang thực hiện</option>
-            <option [value]="this.filterStatus">Đã hoàn thành</option>
-            <option [value]="this.filterStatus">Tạm hoãn</option>
-        </select>
-        
-        <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-max p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option [value]="this.filterStatus">Tất cả</option>
-            <option [value]="this.filterStatus">Thấp</option>
-            <option [value]="this.filterStatus">Trung bình</option>
-            <option [value]="this.filterStatus">Cao</option>
-        </select>
-        
-    </div>
-    <div *ngIf="tasks.length > 0; else noTasks" class="space-y-4 mt-2">
+  <div class="flex space-x-2">
+    <select [(ngModel)]="filterStatus"  (change)="filterTask()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-max p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <option  [ngValue]="'ALL'">Tất cả</option>
+        <option  [ngValue]="'IN_PROGRESS'">Đang thực hiện</option>
+        <option  [ngValue]="'COMPLETED'">Đã hoàn thành</option>
+        <option  [ngValue]="'PENDING'">Tạm hoãn</option>
+    </select>
+    
+    <select [(ngModel)]="filterPriority"  (change)="filterTask()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-max p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        <option [value]="'ALL'">Tất cả</option>
+        <option [value]="'LOW'">Thấp</option>
+        <option [value]="'MEDIUM'">Trung bình</option>
+        <option [value]="'HIGH'">Cao</option>
+    </select>
+    
+</div>
+    <div *ngIf="filteredTasks.length > 0; else noTasks" class="space-y-4 mt-2">
     
         <ul class="divide-y divide-gray-200">
           <li *ngFor="let task of tasks" class="p-4 mb-2 bg-white rounded-lg shadow-md hover:bg-gray-100">

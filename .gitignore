@@ -1,5 +1,4 @@
 Github access token for jenkins.txt
-*.tf
 taskflow-key*
 .terraform
 terraform.tfstate.backup

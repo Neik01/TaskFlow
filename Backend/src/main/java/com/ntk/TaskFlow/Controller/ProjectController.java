@@ -2,6 +2,7 @@ package com.ntk.TaskFlow.Controller;
 
 
 import com.ntk.TaskFlow.DTO.ProjectDTO;
+import com.ntk.TaskFlow.DTO.Request.CreateProjectReq;
 import com.ntk.TaskFlow.Entity.Project;
 import com.ntk.TaskFlow.Mapper.ProjectMapper;
 import com.ntk.TaskFlow.Service.ProjectService;
@@ -16,15 +17,15 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/projects")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class ProjectController {
 
     private final ProjectService projectService;
     private final ProjectMapper mapper;
 
     @PostMapping
-    public ResponseEntity<ProjectDTO> createTask(@RequestBody Project project) {
-        Project createdProject = projectService.createProject(project);
+    public ResponseEntity<ProjectDTO> createTask(@RequestBody CreateProjectReq projectReq) {
+        Project createdProject = projectService.createProject(projectReq.name(),projectReq.description());
         return new ResponseEntity<>(mapper.mapProjectToDTO(createdProject), HttpStatus.CREATED);
     }
 

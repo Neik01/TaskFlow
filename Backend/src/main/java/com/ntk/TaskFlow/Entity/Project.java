@@ -18,7 +18,6 @@ public class Project {
 
     private String name;
 
-    @Lob
     private String description;
 
     @Column(name = "created_at", updatable = false)
