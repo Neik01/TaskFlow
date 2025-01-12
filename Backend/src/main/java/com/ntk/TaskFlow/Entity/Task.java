@@ -27,9 +27,6 @@ public class Task {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private TaskStatus status;
-
-    @Enumerated(EnumType.STRING)
     private TaskPriority priority;
 
     private LocalDateTime deadline;
@@ -47,9 +44,13 @@ public class Task {
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Collaborator> collaborators;
 
-    @ManyToMany(mappedBy = "tasks",fetch = FetchType.LAZY)
-    private List<Project> projects;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn( name = "stage_id")
+    private ProjectStage stage;
     // Getters and setters
 }
 

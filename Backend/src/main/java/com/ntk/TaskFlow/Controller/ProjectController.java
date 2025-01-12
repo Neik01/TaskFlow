@@ -3,6 +3,7 @@ package com.ntk.TaskFlow.Controller;
 
 import com.ntk.TaskFlow.DTO.ProjectDTO;
 import com.ntk.TaskFlow.DTO.Request.CreateProjectReq;
+import com.ntk.TaskFlow.DTO.Request.CreateStagesReq;
 import com.ntk.TaskFlow.Entity.Project;
 import com.ntk.TaskFlow.Mapper.ProjectMapper;
 import com.ntk.TaskFlow.Service.ProjectService;
@@ -24,7 +25,7 @@ public class ProjectController {
     private final ProjectMapper mapper;
 
     @PostMapping
-    public ResponseEntity<ProjectDTO> createTask(@RequestBody CreateProjectReq projectReq) {
+    public ResponseEntity<ProjectDTO> createProject(@RequestBody CreateProjectReq projectReq) {
         Project createdProject = projectService.createProject(projectReq.name(),projectReq.description());
         return new ResponseEntity<>(mapper.mapProjectToDTO(createdProject), HttpStatus.CREATED);
     }
@@ -38,7 +39,7 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable int id) {
         Optional<Project> project = projectService.getProjectById(id);
-        return project.map(project1 -> new ResponseEntity<>(mapper.mapProjectToDTO(project1),HttpStatus.FOUND))
+        return project.map(project1 -> new ResponseEntity<>(mapper.mapProjectToDTO(project1),HttpStatus.OK))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -46,5 +47,13 @@ public class ProjectController {
     public ResponseEntity<Void> deleteProject(@PathVariable int id) {
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/createStage")
+    public ResponseEntity<?> createStages(@RequestBody CreateStagesReq req){
+        Optional<Project> pr = this.projectService.createStage(req.name(), req.projectId());
+        return pr.map(project1 -> new ResponseEntity<>(mapper.mapProjectToDTO(project1),HttpStatus.CREATED))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+
     }
 }

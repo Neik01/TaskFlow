@@ -1,6 +1,6 @@
 package com.ntk.TaskFlow.Controller;
 
-import com.ntk.TaskFlow.DTO.Request.StatusAndPriorityFilter;
+import com.ntk.TaskFlow.DTO.Request.CreateTaskReq;
 import com.ntk.TaskFlow.DTO.TaskDTO;
 import com.ntk.TaskFlow.Entity.Task;
 import com.ntk.TaskFlow.Entity.TaskPriority;
@@ -26,9 +26,10 @@ public class TaskController {
 
 
     @PostMapping
-    public ResponseEntity<TaskDTO> createTask(@RequestBody Task task) {
-        Task createdTask = taskService.createTask(task);
-        return new ResponseEntity<>(mapper.mapTaskToDTO(createdTask), HttpStatus.CREATED);
+    public ResponseEntity<?> createTask(@RequestBody CreateTaskReq req) {
+        return taskService.createTask(req)
+                .map(task -> new ResponseEntity<>(mapper.mapTaskToDTO(task), HttpStatus.CREATED))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping
@@ -58,10 +59,10 @@ public class TaskController {
         return new ResponseEntity<>(mapper.mapListTaskToListDTO(result),HttpStatus.OK);
     }
 
-    @GetMapping("/filterByStatusAndPriority")
-    public ResponseEntity<List<TaskDTO>> findTasksByStatusAndPriority(StatusAndPriorityFilter filter){
+    @GetMapping("/filterByPriority")
+    public ResponseEntity<List<TaskDTO>> findTasksByStatusAndPriority(TaskPriority priority){
 
-        List<Task> result = this.taskService.findByStatusAndPriority(filter.status(),filter.priority());
+        List<Task> result = this.taskService.findByStatusAndPriority(priority);
 
         return new ResponseEntity<>(mapper.mapListTaskToListDTO(result),HttpStatus.OK);
     }

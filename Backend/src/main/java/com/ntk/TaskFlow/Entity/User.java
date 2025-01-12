@@ -37,4 +37,5 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Collaborator> collaborators;
     // Getters and setters
+
 }

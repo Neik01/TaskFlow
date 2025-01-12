@@ -1,11 +1,6 @@
 <div class="p-4">
     <div class="flex space-x-2">
-        <select [(ngModel)]="filterStatus"  (change)="filterTask()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-max p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option  [ngValue]="'ALL'">Tất cả</option>
-            <option  [ngValue]="'IN_PROGRESS'">Đang thực hiện</option>
-            <option  [ngValue]="'COMPLETED'">Đã hoàn thành</option>
-            <option  [ngValue]="'PENDING'">Tạm hoãn</option>
-        </select>
+    
         
         <select [(ngModel)]="filterPriority"  (change)="filterTask()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-max p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             <option [value]="'ALL'">Tất cả</option>
@@ -22,21 +17,7 @@
             <h3 class="text-xl font-semibold text-gray-800">{{ task.title }}</h3>
             <p class="mt-2 text-gray-600">{{ task.description }}</p>
     
-            <!-- Task Status -->
-            <p class="mt-2 text-sm text-gray-500">Trạng thái:
-              <span [ngClass]="{
-                'text-green-500': task.status === 'COMPLETED',
-                'text-yellow-500': task.status === 'IN_PROGRESS',
-                'text-red-500': task.status === 'PENDING',
-                'text-slate-400': task.status === 'OVERDUE'
-              }">
-                <strong *ngIf="task.status ==='COMPLETED'">Hoàn thành</strong>
-                <strong *ngIf="task.status ==='IN_PROGRESS'">Đang tiến hành</strong>
-                <strong *ngIf="task.status ==='PENDING'">Tạm hoãn</strong>
-                <strong *ngIf="task.status ==='OVERDUE'">Quá hạn</strong>
-
-              </span>
-            </p>
+           
     
             <!-- Task Priority -->
             <p class="mt-2 text-sm text-gray-500">Độ ưu tiên:

@@ -1,14 +1,8 @@
 package com.ntk.TaskFlow.Mapper;
 
 
-import com.ntk.TaskFlow.DTO.CollaboratorDTO;
-import com.ntk.TaskFlow.DTO.ProjectDTO;
-import com.ntk.TaskFlow.DTO.TaskDTO;
-import com.ntk.TaskFlow.DTO.UserDTO;
-import com.ntk.TaskFlow.Entity.Collaborator;
-import com.ntk.TaskFlow.Entity.Project;
-import com.ntk.TaskFlow.Entity.Task;
-import com.ntk.TaskFlow.Entity.User;
+import com.ntk.TaskFlow.DTO.*;
+import com.ntk.TaskFlow.Entity.*;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -29,4 +23,6 @@ public interface ProjectMapper {
     List<CollaboratorDTO> mapListCollaboratorToListDTO(List<Collaborator> collaborator);
 
     UserDTO mapUserToDto(User user);
+
+    ProjectStageDTO mapProjectStageToDto(ProjectStage stage);
 }

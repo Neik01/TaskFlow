@@ -1,8 +1,9 @@
 package com.ntk.TaskFlow.Service;
 
 import com.ntk.TaskFlow.Entity.Project;
-import com.ntk.TaskFlow.Entity.Task;
+import com.ntk.TaskFlow.Entity.ProjectStage;
 import com.ntk.TaskFlow.Repository.ProjectRepository;
+import com.ntk.TaskFlow.Repository.ProjectStageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ProjectStageRepository projectStageRepository;
 
     public Project createProject(String projectName,String projectDescription){
         Project newProject = new Project();
@@ -31,5 +33,23 @@ public class ProjectService {
 
     public void deleteProject(int id) {
         projectRepository.deleteById(id);
+    }
+
+    public Optional<Project> createStage(String stageName, int projectId){
+
+        Optional<Project> pr = this.projectRepository.findById(projectId);
+        if (pr.isPresent()){
+            ProjectStage projectStage = new ProjectStage();
+            Project project = pr.get();
+
+            projectStage.setName(stageName);
+            projectStage.setProject(project);
+
+            project.addStage(projectStage);
+
+            this.projectStageRepository.save(projectStage);
+            this.projectRepository.save(project);
+        }
+        return pr;
     }
 }

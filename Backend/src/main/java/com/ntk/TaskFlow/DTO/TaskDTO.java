@@ -6,7 +6,7 @@ import com.ntk.TaskFlow.Entity.User;
 
 import java.time.LocalDateTime;
 
-public record TaskDTO(int id, String title, String description, TaskStatus status, TaskPriority priority,
+public record TaskDTO(int id, String title, String description, TaskPriority priority,
                       LocalDateTime deadline, LocalDateTime createdAt, LocalDateTime updatedAt,
-                      CollaboratorDTO collaborator) {
+                      CollaboratorDTO collaborator,ProjectStageDTO stage) {
 }

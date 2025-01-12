@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { TaskResponse } from '../responses/TaskResponse';
+import { TaskResponse } from '../responses/ServerResponse';
 
 @Injectable({
   providedIn: 'root'

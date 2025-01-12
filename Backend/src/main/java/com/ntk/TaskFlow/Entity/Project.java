@@ -3,9 +3,9 @@ package com.ntk.TaskFlow.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,13 +30,18 @@ public class Project {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @ManyToMany
-    @JoinTable(
-        name = "task_projects",
-        joinColumns = @JoinColumn(name = "project_id"),
-        inverseJoinColumns = @JoinColumn(name = "task_id")
-    )
+    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL)
     private List<Task> tasks;
 
+    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL)
+    private List<ProjectStage> stages;
     // Getters and setters
+
+
+    public void addStage(ProjectStage stage){
+        if (this.stages==null){
+            this.stages = new ArrayList<>();
+        }
+        stages.add(stage);
+    }
 }

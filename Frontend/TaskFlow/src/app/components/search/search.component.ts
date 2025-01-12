@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Route } from '@angular/router';
-import { TaskResponse } from 'src/app/responses/TaskResponse';
+import { TaskResponse } from 'src/app/responses/ServerResponse';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 
 @Component({
@@ -10,7 +10,6 @@ import { TaskServiceService } from 'src/app/services/task-service.service';
 })
 export class SearchComponent {
   tasks:TaskResponse[] = [];
-  filterStatus:string ='ALL';
   filterPriority:string ='ALL';
   filteredTasks:TaskResponse[] =[];
   constructor(readonly ts:TaskServiceService,
@@ -18,7 +17,15 @@ export class SearchComponent {
   ){}
 
   ngOnInit(): void {
-    console.log(this.route.paramMap);
+    if(this.route.snapshot.params['keyword']){
+      console.log(this.route.snapshot.params['keyword']);
+      
+    }
+    else{
+      console.log('no params');
+      
+    }
+    
     this.route.paramMap.subscribe(param =>{
       if(param&&param.get("keyword")){
         console.log(param.get("keyword"));
@@ -39,10 +46,7 @@ export class SearchComponent {
     }
     else this.filteredTasks = this.tasks;
 
-    if(this.filterStatus!='ALL'){
-      this.filteredTasks = this.tasks.filter(t => t.status ===this.filterStatus);
-    }
-    else this.filteredTasks = this.tasks;
+
 
   }
 }

@@ -10,6 +10,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchModalComponent } from './components/modal/search-modal/search-modal.component';
 import { TasklistComponent } from './components/tasklist/tasklist.component';
 import { SearchComponent } from './components/search/search.component';
+import { ProjectComponent } from './components/project/project.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 @NgModule({
@@ -20,14 +22,16 @@ import { SearchComponent } from './components/search/search.component';
     CreateTaskModalComponent,
     SearchModalComponent,
     TasklistComponent,
-    SearchComponent
+    SearchComponent,
+    ProjectComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]

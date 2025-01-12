@@ -1,12 +1,12 @@
 package com.ntk.TaskFlow.Service;
 
-import com.ntk.TaskFlow.Entity.Task;
-import com.ntk.TaskFlow.Entity.TaskPriority;
-import com.ntk.TaskFlow.Entity.TaskStatus;
+import com.ntk.TaskFlow.DTO.Request.CreateTaskReq;
+import com.ntk.TaskFlow.Entity.*;
+import com.ntk.TaskFlow.Repository.ProjectRepository;
+import com.ntk.TaskFlow.Repository.ProjectStageRepository;
 import com.ntk.TaskFlow.Repository.TaskRepository;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +18,34 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    public Task createTask(Task task) {
+    private final ProjectRepository projectRepository;
 
+    private final ProjectStageRepository projectStageRepository;
 
-        return taskRepository.save(task);
+    public Optional<Task> createTask(CreateTaskReq req) {
+
+        Optional<Project> pr = this.projectRepository.findById(req.projectId());
+        Optional<Task> t =Optional.empty();
+        if (pr.isPresent()){
+            Optional<ProjectStage> st = this.projectStageRepository.findById(req.stageId());
+            Project project = pr.get();
+
+            Task task = new Task();
+
+            task.setPriority(req.priority());
+            task.setTitle(req.title());
+            task.setDescription(req.description());
+            task.setProject(project);
+            task.setDeadline(req.deadline());
+
+            if (st.isPresent()){
+                ProjectStage stage = st.get();
+                task.setStage(stage);
+            }
+            t = Optional.of(taskRepository.save(task));
+        }
+
+        return t;
     }
 
     public List<Task> getAllTasks() {
@@ -40,8 +64,8 @@ public class TaskService {
         return this.taskRepository.findByTitleOrDescriptionContaining(keyword);
     }
 
-    public List<Task> findByStatusAndPriority(@Nullable TaskStatus status,@Nullable TaskPriority priority){
-        return this.taskRepository.findByStatusAndPriority(status,priority);
+    public List<Task> findByStatusAndPriority(@Nullable TaskPriority priority){
+        return this.taskRepository.findByPriority(priority);
     }
 
 
