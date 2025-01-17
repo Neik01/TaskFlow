@@ -1,4 +1,4 @@
-<div class="fixed left-0 h-full w-64 m-0 flex flex-col bg-[#CDC1FF] border-r-2 shadow-lg">
+<div class="fixed left-0 h-full w-64 m-0 flex flex-col bg-[#f7e3e1] border-r-2 shadow-lg">
     <div class="w-full flex justify-between mb-3">
         <div class="relative inline-block ">
             <!-- Button with Name and Dropdown Arrow -->
@@ -89,5 +89,16 @@
     </div>
 </div>
 
-<app-create-task-modal *ngIf="isCreateModalOpen" (close)="closeModal()"></app-create-task-modal>
+
+    <div
+    class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50"
+    *ngIf="isCreateModalOpen" 
+    >
+            <div
+        class="bg-white rounded-lg shadow-lg p-6 w-max relative"
+        role="dialog"
+        >
+        <app-create-task-modal [mode]="'large'" (close)="closeModal()"></app-create-task-modal>
+    </div>
+</div>
 <app-search-modal *ngIf="isSearchModalOpen" (close)="closeModal()"></app-search-modal>

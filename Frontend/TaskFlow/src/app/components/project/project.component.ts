@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from 'src/app/services/project.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { ProjectResponse } from 'src/app/responses/ServerResponse';
+import { TaskServiceService } from 'src/app/services/task-service.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-project',
@@ -10,76 +13,133 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 })
 export class ProjectComponent implements OnInit{
 
-  columns = [
-    {
-      id: 'col-1',
-      title: 'frontend',
-      tasks: [
-        { title: 'Task 1', description: 'Description 1' },
-        { title: 'Task 2', description: 'Description 2' },
-      ],
-    },
-    {
-      id: 'col-2',
-      title: 'backend',
-      tasks: [{ title: 'Task 3', description: 'Description 3' }],
-    },
-  ];
+  columns:any[] = new Array(); 
   columnCounter = 3;
-
-  constructor(private route: ActivatedRoute, private projectService: ProjectService) { }
+  project!:ProjectResponse;
+  stages:any[] =[];
+  newSectionName:string ='';
+  isAddStage:boolean = false;
+  activeStage: string | null = null;
+  constructor(private route: ActivatedRoute, 
+    private projectService: ProjectService,
+    private ts:TaskServiceService) { }
 
   ngOnInit() {
-    // Get the project ID from the route
+
+      this.projectService.getProjectById(1).subscribe((data:ProjectResponse) => {
+        this.handleProjectResponse(data);
+        
+      });
   };
-  // List of connected task drop lists
-  get connectedDropLists(): any[] {
-    return this.columns.map(x => x.id);
+ 
+  private handleProjectResponse(data: ProjectResponse) {
+    this.project = data;
+    this.stages = this.project.stages.sort((stage1,stage2)=>stage1.position - stage2.position) || [];
+    if (this.stages.length === 0 || this.stages[0].name !== 'No stage') {
+      this.stages.unshift({ id: -1, name: 'No stage', tasks: [] });
+    }
+    const noStageTasks = this.project.tasks.filter(task => !task.stage);
+    this.stages[0].tasks = noStageTasks;
+    this.stages.forEach(stage => {
+      if (stage.name !== 'No stage') {
+        stage.tasks = this.project.tasks.filter(task => task.stage?.id === stage.id)
+          .sort((a, b) => a.positionInStage - b.positionInStage);
+      }
+    });
   }
 
   // Add a new task to a specific column
-  addTask(column: any) {
-    column.tasks.push({ title: 'New Task', description: '' });
+  addTask(stage: any) {
+    this.activeStage = stage.id;
   }
 
-  // Add a new column
-  addColumn() {
-    this.columns.push({
-      id: `col-${this.columnCounter++}`,
-      title: 'New Section',
-      tasks: [],
-    });
+  addStage(){
+
+    if(this.isAddStage){
+      console.log(this.newSectionName);
+      this.isAddStage = false;
+      this.projectService.createStage(this.project.id,this.newSectionName).subscribe((data:ProjectResponse) => {
+        this.handleProjectResponse(data);
+        this.newSectionName='';
+      });
+    }
+    else
+    {
+      this.isAddStage = true;
+    }
+
+  }
+
+  cancelAddStage(){
+    this.isAddStage = false;
+    this.newSectionName = '';
+  }
+
+  dropStage(event: CdkDragDrop<any[]>) {
+    moveItemInArray(this.stages, event.previousIndex, event.currentIndex);
+    console.log(this.stages);
+    const stagesId = this.stages.reduce((acc: { [key: number]: number }, stage, index) => ({
+      ...acc,
+      [stage.id]: index
+    }), {});
+    console.log(stagesId);
+    this.projectService.updateStages(stagesId).subscribe((data:ProjectResponse[]) => {
+      console.log(data);
+    })
   }
 
   // Handle reordering of tasks within and across columns
   dropTask(event: CdkDragDrop<any[]>) {
     if (event.previousContainer === event.container) {
-      console.log(event.previousContainer.data);
-      
       // Reorder tasks within the same column
       moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
+
     } else {
       // Move tasks between columns
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        event.currentIndex
+        event.currentIndex==0 ? 0 : event.currentIndex
       );
     }
+
+    const previousStageId = +(event.previousContainer.element.nativeElement.parentElement?.getAttribute('id') ?? -1);
+    const currentStageId = +(event.container.element.nativeElement.parentElement?.getAttribute('id')??-1);
+   
+    const sourcePositionMap: { [key: string]: number | string } = {};
+  
+    event.previousContainer.data.forEach((task: any, index: number) => {
+      sourcePositionMap[task.id] = index;
+    });
+
+    const targetPositionMap: { [key: string]: number | string } = {};
+   
+    event.container.data.forEach((task: any, index: number) => {
+      targetPositionMap[task.id] = index;
+    });
+    console.log()
+    // Send both position maps to backend
+    this.ts.updateTaskPos(
+      targetPositionMap,
+      sourcePositionMap,
+      previousStageId,
+      currentStageId
+    ).subscribe(response => {
+      console.log(response);
+    });
   }
 
-  // Handle reordering of columns
-  dropColumn(event: CdkDragDrop<any[]>) {
-    moveItemInArray(
-      this.columns,
-      event.previousIndex,
-      event.currentIndex
-    );
+  toggleTaskModal(stage: any) {
+    this.activeStage = this.activeStage === stage.id ? null : stage.id;
+  }
+  
+  closeTaskModal() {
+    this.activeStage = null;
   }
 }
 

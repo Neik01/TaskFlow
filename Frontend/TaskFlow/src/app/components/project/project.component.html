@@ -1,40 +1,43 @@
-<div class="p-6">
-  <h1 class="text-2xl font-bold mb-4">ecommerce app</h1>
+<div class="p-6 ">
+  <h1 class="text-2xl font-bold mb-4">{{this.project.name}}</h1>
   <!-- Column Container -->
   <div
     class="flex gap-6"
     cdkDropList
     cdkDropListOrientation="horizontal"
-    [cdkDropListData]="columns"
-    (cdkDropListDropped)="dropTask($event)"
+    [cdkDropListData]="this.stages"
+    (cdkDropListDropped)="dropStage($event)"
+    
     cdkDropListGroup
   >
     <!-- Individual Column -->
     <div
-      *ngFor="let column of columns"
-      class="bg-gray-100 rounded-lg p-4 w-60 min-h-[200px] flex flex-col gap-4"
+      *ngFor="let stage of this.stages"
+      class="bg-gray-100 rounded-lg p-4 w-60 min-w-60 max-w-60 min-h-[200px] h-fit flex flex-col gap-4"
       cdkDrag
-      id="{{column.id}}"
-      
+      id="{{ stage.id }}"
     >
       <!-- Column Header -->
       <div class="flex justify-between items-center text-lg font-semibold">
-        <span>{{ column.title }}</span>
-        <span class="text-sm text-gray-500">{{ column.tasks.length }}</span>
+      <span class="truncate hover:animate-marquee whitespace-nowrap overflow-hidden" 
+          title="{{ stage.name }}"
+          >
+        {{ stage.name }}
+      </span>
       </div>
 
       <!-- Task Container -->
       <div
-        class="flex flex-col gap-2"
+        class="flex flex-col gap-2 min-h-4"
         cdkDropList
-        [cdkDropListData]="column.tasks"
-     
+        [cdkDropListData]="stage.tasks"
         (cdkDropListDropped)="dropTask($event)"
       >
         <!-- Individual Task -->
         <div
-          *ngFor="let task of column.tasks"
+          *ngFor="let task of stage.tasks"
           class="bg-white shadow rounded-lg p-2 cursor-pointer"
+          
           cdkDrag
         >
           <div class="font-medium">{{ task.title }}</div>
@@ -43,20 +46,49 @@
       </div>
 
       <!-- Add Task Button -->
+       <!-- Create task modal should be here -->
       <button
-        (click)="addTask(column)"
+        (click)="addTask(stage)"
         class="mt-4 text-blue-500 hover:text-blue-600 text-sm"
       >
         + Add task
       </button>
+      <div *ngIf="activeStage === stage.id"  class="text-sm left-0 top-full mt-2 w-full bg-white rounded-lg shadow-lg z-10 p-4">
+        <app-create-task-modal
+         [mode]="'small'"
+          (close)="closeTaskModal()"
+        ></app-create-task-modal>
+      </div>
+    </div>
+
+    <div class="mb-4  bg-gray-100 p-4 h-fit min-w-fit  rounded-lg items-center">
+      <input
+        *ngIf="isAddStage"
+        type="text"
+        placeholder="Name this section"
+        [(ngModel)]="newSectionName"
+        class="border border-gray-300 rounded-md p-2 flex-grow"
+      />
+      <div class="flex items-center gap-2 mt-2">
+
+        <button
+          (click)="addStage()"
+          class=" bg-red-500 text-white py-2 px-2 rounded-md hover:bg-red-600"
+        >
+          Add section
+        </button>
+
+        <button
+          *ngIf="isAddStage"
+          (click)="cancelAddStage()"
+          class="bg-white text-slate-500 px-2 py-2 rounded-md hover:bg-slate-300"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Add Section Button -->
-  <button
-    (click)="addColumn()"
-    class="bg-gray-200 rounded-lg p-4 text-gray-600 hover:bg-gray-300 mt-4"
-  >
-    + Add section
-  </button>
+ 
 </div>

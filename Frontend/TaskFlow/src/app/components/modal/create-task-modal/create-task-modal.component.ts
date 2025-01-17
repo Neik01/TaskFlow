@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 
@@ -9,6 +9,7 @@ import { TaskServiceService } from 'src/app/services/task-service.service';
 })
 export class CreateTaskModalComponent implements OnInit{
   @Output() close = new EventEmitter<void>();
+  @Input() mode: "small"| "large" = "small";
   showDatePicker: boolean = false;
   selectedPriority: string = 'LOW';
   selectedDate: string = ''; 

@@ -7,10 +7,14 @@ export interface TaskResponse{
     deadline: Date;
     createdAt: Date;
     updatedAt: Date;
-    collaborator: string | null; // Ca
+    collaborator: string | null; 
+    positionInStage:number;
+    stage: Stage|null;
 }
 export interface Stage {
+    id:number;
     name: string;
+    position:number;
 }
 export interface ProjectResponse {
     id: number;

@@ -26,4 +26,12 @@ export class ProjectService {
   public getProjectById(id:number){
     return this.httpClient.get<ProjectResponse>(this.projecturl+"/"+id);
   }
+
+  public createStage(projectId:number,stageName:string){
+    return this.httpClient.post<ProjectResponse>(this.projecturl+"/createStage",{name:stageName,projectId:projectId});
+  }
+
+  public updateStages(stages:any){
+    return this.httpClient.put<ProjectResponse[]>(this.projecturl+"/updateStage",{stages:stages});
+  }
 }

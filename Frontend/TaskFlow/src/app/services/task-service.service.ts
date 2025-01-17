@@ -27,4 +27,19 @@ export class TaskServiceService {
   public searchTask(keyword:string){
     return this.httpClient.get<TaskResponse[]>(this.taskUrl+"/search/"+keyword);
   }
+
+  public updateTaskPosInStage(tasks:any){
+    return this.httpClient.put<TaskResponse[]>(this.taskUrl+"/updatePosInStage",tasks);
+
+  }
+
+  public changeTaskStage(taskId:number,stageId:number){
+
+    return this.httpClient.put<TaskResponse>(this.taskUrl+"/changeStage",{taskId:taskId,stageId:stageId});
+  }
+
+  public updateTaskPos(currentStage:any,previousStage:any,prevStageId:number,currentStageId:number){
+    return this.httpClient.put<TaskResponse[]>(this.taskUrl+"/changePos",{currentStage:currentStage,prevStage:previousStage,prevStageId:prevStageId,currentStageId:currentStageId});
+
+  }
 }
