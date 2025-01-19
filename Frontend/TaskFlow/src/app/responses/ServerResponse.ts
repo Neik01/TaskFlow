@@ -4,6 +4,7 @@ export interface TaskResponse{
     title: string;
     description: string;
     priority: "HIGH" | "MEDIUM" | "LOW"; // Enum-like typing for priority
+    status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "OVERDUE";
     deadline: Date;
     createdAt: Date;
     updatedAt: Date;
@@ -16,7 +17,7 @@ export interface Stage {
     name: string;
     position:number;
 }
-export interface ProjectResponse {
+export interface BoardResponse {
     id: number;
     name: string;
     description: string;

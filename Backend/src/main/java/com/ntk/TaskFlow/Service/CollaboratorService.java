@@ -2,7 +2,6 @@ package com.ntk.TaskFlow.Service;
 
 
 import com.ntk.TaskFlow.Entity.Collaborator;
-import com.ntk.TaskFlow.Entity.Project;
 import com.ntk.TaskFlow.Repository.CollaboratorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

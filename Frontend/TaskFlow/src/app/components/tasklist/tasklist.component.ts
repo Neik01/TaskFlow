@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProjectResponse, TaskResponse } from 'src/app/responses/ServerResponse';
-import { ProjectService } from 'src/app/services/project.service';
+import { BoardResponse, TaskResponse } from 'src/app/responses/ServerResponse';
+import { BoardService } from 'src/app/services/board.service';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 
 @Component({
@@ -14,14 +14,14 @@ export class TasklistComponent implements OnInit{
   tasks:TaskResponse[] = [];
   filterPriority:string ='ALL';
   filteredTasks:TaskResponse[] =[];
-  project:ProjectResponse | null = null;
+  board:BoardResponse | null = null;
   constructor(readonly ts:TaskServiceService,
-              readonly ps:ProjectService,
+              readonly bs:BoardService,
               readonly route: ActivatedRoute){}
 
   ngOnInit(): void {
-    this.ps.getProjectById(1).subscribe((res:ProjectResponse) => {
-      this.project = res;
+    this.bs.getBoardById(1).subscribe((res:BoardResponse) => {
+      this.board = res;
     });
 
     this.route.url.subscribe(value=>{

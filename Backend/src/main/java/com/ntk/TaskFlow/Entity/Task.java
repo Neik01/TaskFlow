@@ -29,6 +29,9 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private TaskPriority priority;
 
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
+
     private LocalDateTime deadline;
 
     @Column(name = "created_at", updatable = false)
@@ -45,12 +48,14 @@ public class Task {
     private List<Collaborator> collaborators;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project project;
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn( name = "stage_id")
-    private ProjectStage stage;
+    @JoinColumn(name = "stage_id")
+    private BoardStage stage;
+
+    private int positionInStage;
     // Getters and setters
 }
 

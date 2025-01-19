@@ -1,5 +1,6 @@
 package com.ntk.TaskFlow.Controller;
 
+import com.ntk.TaskFlow.DTO.Request.ChangeTaskPosReq;
 import com.ntk.TaskFlow.DTO.Request.CreateTaskReq;
 import com.ntk.TaskFlow.DTO.TaskDTO;
 import com.ntk.TaskFlow.Entity.Task;
@@ -7,12 +8,13 @@ import com.ntk.TaskFlow.Entity.TaskPriority;
 import com.ntk.TaskFlow.Mapper.ProjectMapper;
 import com.ntk.TaskFlow.Service.TaskService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -65,5 +67,20 @@ public class TaskController {
         List<Task> result = this.taskService.findByStatusAndPriority(priority);
 
         return new ResponseEntity<>(mapper.mapListTaskToListDTO(result),HttpStatus.OK);
+    }
+
+
+    @PutMapping("/changePos")
+    public ResponseEntity<?> changePos(@RequestBody ChangeTaskPosReq req){
+        try {
+            HashMap<String,List<Task>> result = this.taskService.changeTaskPos(req);
+            HashMap<String,List<TaskDTO>> response = new HashMap<>();
+            for(Map.Entry<String,List<Task>> entry:result.entrySet()){
+                response.put(entry.getKey(), mapper.mapListTaskToListDTO(entry.getValue()));
+            }
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

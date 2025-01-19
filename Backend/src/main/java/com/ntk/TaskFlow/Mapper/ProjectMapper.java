@@ -14,9 +14,9 @@ public interface ProjectMapper {
 
     List<TaskDTO> mapListTaskToListDTO(List<Task> tasks);
 
-    ProjectDTO mapProjectToDTO (Project project);
+    BoardDTO mapBoardToDTO(Board board);
 
-    List<ProjectDTO> mapListProjectToListDTO(List<Project> projects);
+    List<BoardDTO> mapListBoardToListDTO(List<Board> boards);
 
     CollaboratorDTO mapCollaboratorToDTO (Collaborator collaborator);
 
@@ -24,5 +24,7 @@ public interface ProjectMapper {
 
     UserDTO mapUserToDto(User user);
 
-    ProjectStageDTO mapProjectStageToDto(ProjectStage stage);
+    ProjectStageDTO mapProjectStageToDto(BoardStage stage);
+    List<ProjectStageDTO> mapListProjectStageToListDTO(List<BoardStage> stage);
+
 }

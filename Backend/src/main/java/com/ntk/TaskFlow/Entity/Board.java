@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Project {
+public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -30,15 +30,15 @@ public class Project {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "board",cascade = CascadeType.ALL)
     private List<Task> tasks;
 
-    @OneToMany(mappedBy = "project",cascade = CascadeType.ALL)
-    private List<ProjectStage> stages;
+    @OneToMany(mappedBy = "board",cascade = CascadeType.ALL)
+    private List<BoardStage> stages;
     // Getters and setters
 
 
-    public void addStage(ProjectStage stage){
+    public void addStage(BoardStage stage){
         if (this.stages==null){
             this.stages = new ArrayList<>();
         }

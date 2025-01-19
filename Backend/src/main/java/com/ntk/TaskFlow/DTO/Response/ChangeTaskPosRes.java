@@ -1,4 +1,6 @@
 package com.ntk.TaskFlow.DTO.Response;
 
-public record ChangeTaskPosRes() {
+import java.util.HashMap;
+
+public record ChangeTaskPosRes(HashMap<Integer,Integer> prevStage, HashMap<Integer,Integer> currentStage) {
 }

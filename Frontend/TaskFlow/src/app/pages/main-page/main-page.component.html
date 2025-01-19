@@ -1,7 +1,15 @@
-
-<div class="h-screen">
-    <app-sidebar ></app-sidebar>
-    <div class="ml-64">
-        <router-outlet></router-outlet>
+<div class="h-screen flex flex-col bg-gradient-to-br from-[#1D1D1D] via-[#2D1A2D] to-[#1D1D1D]">
+  <!-- Header -->
+  <app-header class="flex-shrink-0"></app-header>
+  
+  <!-- Main Content -->
+  <div class="flex flex-1 pt-[44px]"> <!-- 44px is header height -->
+    <!-- Sidebar -->
+    <app-sidebar class="w-[260px] flex-shrink-0 fixed h-[calc(100vh-44px)]"></app-sidebar>
+    
+    <!-- Content Area -->
+    <div class="flex-1 ml-[260px] overflow-x-auto bg-gradient-to-br from-[#2D1A2D] via-[#1E1E2F] to-[#2D1A2D]">
+      <router-outlet></router-outlet>
     </div>
+  </div>
 </div>

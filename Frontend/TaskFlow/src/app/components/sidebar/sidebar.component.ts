@@ -10,6 +10,44 @@ export class SidebarComponent {
   isCreateModalOpen = false;
   isSearchModalOpen = false;
 
+  mainMenuItems = [
+    {
+      label: 'Boards',
+      icon: 'fas fa-columns text-gray-400',
+      route: '/boards'
+    },
+    {
+      label: 'Members',
+      icon: 'fas fa-users text-gray-400',
+      route: '/members'
+    },
+    {
+      label: 'Workspace settings',
+      icon: 'fas fa-cog text-gray-400',
+      route: '/settings'
+    }
+  ];
+
+  workspaceViews = [
+    {
+      label: 'Table',
+      icon: 'fas fa-table text-gray-400'
+    },
+    {
+      label: 'Calendar',
+      icon: 'fas fa-calendar text-gray-400'
+    }
+  ];
+
+  boards = [
+    {
+      name: 'TaskFlow App Development'
+    },
+    {
+      name: 'TaskFlow App Development 2'
+    }
+  ];
+
   constructor(private elementRef: ElementRef){}
 
   toggleMenu() {

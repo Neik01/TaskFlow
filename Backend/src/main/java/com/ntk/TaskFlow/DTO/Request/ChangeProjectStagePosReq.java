@@ -1,4 +1,6 @@
 package com.ntk.TaskFlow.DTO.Request;
 
-public record ChangeProjectStagePosReq() {
+import java.util.HashMap;
+
+public record ChangeProjectStagePosReq(HashMap<Integer,Integer> stages) {
 }

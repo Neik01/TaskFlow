@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectStage {
+public class BoardStage {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -22,9 +22,11 @@ public class ProjectStage {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="project_id")
-    private Project project;
+    @JoinColumn(name="board_id")
+    private Board board;
 
     @OneToMany(mappedBy = "stage", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Task> task;
+
+    private int position;
 }

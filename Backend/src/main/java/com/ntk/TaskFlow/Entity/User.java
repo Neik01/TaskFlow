@@ -32,7 +32,7 @@ public class User {
     private List<Task> tasks;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<Project> projects;
+    private List<Board> boards;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Collaborator> collaborators;

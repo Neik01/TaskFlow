@@ -14,4 +14,6 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
     List<Task> findByTitleOrDescriptionContaining(String keyword);
 
     List<Task> findByPriority(@Nullable TaskPriority priority);
+
+    List<Task> findByIdIn(List<Integer> ids);
 }

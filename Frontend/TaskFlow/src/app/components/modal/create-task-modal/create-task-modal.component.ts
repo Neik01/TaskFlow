@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { BoardResponse } from 'src/app/responses/ServerResponse';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 
 @Component({
@@ -9,14 +10,17 @@ import { TaskServiceService } from 'src/app/services/task-service.service';
 })
 export class CreateTaskModalComponent implements OnInit{
   @Output() close = new EventEmitter<void>();
-  @Input() mode: "small"| "large" = "small";
+ 
+  @Input() boardId!: number;
+  @Input() stageId!: number;
   showDatePicker: boolean = false;
   selectedPriority: string = 'LOW';
   selectedDate: string = ''; 
   selectedTime: string = ''; 
   combinedDateTime: string =''
   createForm!:FormGroup;
-  
+  boardList:BoardResponse[] = [];
+  selectedStatus: string = 'PENDING';
   constructor(readonly fb:FormBuilder, readonly ts:TaskServiceService){}
 
   ngOnInit(): void {
@@ -25,16 +29,26 @@ export class CreateTaskModalComponent implements OnInit{
       description:[''],
       deadline:[''],
       priority:[''],
-      
+      status: [''],
+      boardId:[''],
+      stageId:['']
     })
   }
 
   submitCreateForm(){
     if(this.createForm.valid){
-      this.createForm.patchValue({deadline:this.combinedDateTime.replace(" ","T")})
-      this.createForm.patchValue({priority:this.selectedPriority})
+      this.createForm.patchValue({
+        deadline: this.combinedDateTime.replace(" ","T"),
+        priority: this.selectedPriority,
+        status: this.selectedStatus,
+        boardId: this.boardId,
+        stageId: this.stageId
+      });
 
-      this.ts.createTask(this.createForm.value).subscribe(res => console.log(res));
+      this.ts.createTask(this.createForm.value).subscribe(res => {
+        console.log(res);
+        this.close.emit();
+      });
     }
   }
 
@@ -55,56 +69,92 @@ export class CreateTaskModalComponent implements OnInit{
   //if select time, not date, set it to tomorrow if selected time less than right now, otherwise set date today
 
   saveDateTime(): void {
-    
-    const now = new Date(); // Current date and time
+    const now = new Date();
     let adjustedDateTime;
 
     if (this.selectedDate && !this.selectedTime) {
-        // Only date selected
-        adjustedDateTime = new Date(this.selectedDate);
-        if (adjustedDateTime.toDateString() === now.toDateString()) {
-            // If the selected date is today, set the time to 23:59
-            adjustedDateTime.setHours(23, 59, 0, 0);
-        } else {
-            // Otherwise, set the time to 00:00
-            adjustedDateTime.setHours(0, 0, 0, 0);
-        }
+      // Only date selected
+      adjustedDateTime = new Date(this.selectedDate);
+      if (adjustedDateTime.toDateString() === now.toDateString()) {
+        // If the selected date is today, set the time to 23:59
+        adjustedDateTime.setHours(23, 59, 0, 0);
+      } else {
+        // Otherwise, set the time to 00:00
+        adjustedDateTime.setHours(0, 0, 0, 0);
+      }
     } else if (!this.selectedDate && this.selectedTime) {
-        // Only time selected
-        const [hours, minutes] = this.selectedTime.split(':').map(Number);
-        adjustedDateTime = new Date(now);
-        adjustedDateTime.setHours(hours, minutes, 0, 0);
-
-        if (adjustedDateTime < now) {
-            // If the selected time is earlier than now, set the date to tomorrow
-            adjustedDateTime.setDate(adjustedDateTime.getDate() + 1);
-        }
-    } else if(!this.selectedDate&&!this.selectedTime) {
-        return;
-    }
-     else if (this.selectedDate && this.selectedTime){
-      adjustedDateTime = new Date(this.selectedDate)
+      // Only time selected
       const [hours, minutes] = this.selectedTime.split(':').map(Number);
       adjustedDateTime = new Date(now);
       adjustedDateTime.setHours(hours, minutes, 0, 0);
-     
-     }
 
-    console.log(adjustedDateTime?.toLocaleDateString("vi-VN"));
-     
-    
-    this.combinedDateTime = this.formatDateTime(adjustedDateTime!)
+      if (adjustedDateTime < now) {
+        // If the selected time is earlier than now, set the date to tomorrow
+        adjustedDateTime.setDate(adjustedDateTime.getDate() + 1);
+      }
+    } else if(!this.selectedDate && !this.selectedTime) {
+      return;
+    } else if (this.selectedDate && this.selectedTime) {
+      // Both date and time selected
+      adjustedDateTime = new Date(this.selectedDate);
+      const [hours, minutes] = this.selectedTime.split(':').map(Number);
+      adjustedDateTime.setHours(hours, minutes, 0, 0);
+    }
+
+    this.combinedDateTime = this.formatDateTime(adjustedDateTime!);
     this.closeDatePicker();
   }
 
  
   formatDateTime(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
+    // Keep ISO format for backend and internal use
+    const isoString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    return isoString;
+  }
+
+setQuickDate(option: 'today' | 'tomorrow' | 'nextWeek' | 'nextMonth'): void {
+  const now = new Date();
+  let date = new Date();
+
+  switch (option) {
+    case 'today':
+      date.setHours(23, 59, 0, 0);
+      break;
+    case 'tomorrow':
+      date.setDate(date.getDate() + 1);
+      date.setHours(23, 59, 0, 0);
+      break;
+    case 'nextWeek':
+      date.setDate(date.getDate() + 7);
+      date.setHours(23, 59, 0, 0);
+      break;
+    case 'nextMonth':
+      date.setMonth(date.getMonth() + 1);
+      date.setHours(23, 59, 0, 0);
+      break;
+  }
+
+  this.selectedDate = this.formatDateForInput(date);
+  this.selectedTime = this.formatTimeForInput(date);
+  this.saveDateTime();
+}
+
+private formatDateForInput(date: Date): string {
+  return date.toISOString().split('T')[0]; // Returns yyyy-MM-dd format
+}
+
+private formatTimeForInput(date: Date): string {
+  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
+
+onDateInput(event: any): void {
+  this.selectedDate = event.target.value;
+  // Convert to Date object and format as needed
+  const date = new Date(event.target.value);
+  if (!isNaN(date.getTime())) {
+    // Valid date
+    this.selectedDate = date.toISOString().split('T')[0];
+  }
 }
 
 }

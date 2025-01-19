@@ -10,8 +10,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchModalComponent } from './components/modal/search-modal/search-modal.component';
 import { TasklistComponent } from './components/tasklist/tasklist.component';
 import { SearchComponent } from './components/search/search.component';
-import { ProjectComponent } from './components/project/project.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { TaskStatusPipe } from './pipes/task-status.pipe';
+import { TaskDetailModalComponent } from './components/modal/task-detail-modal/task-detail-modal.component';
+import { BoardComponent } from './components/board/board.component';
+import { HeaderComponent } from './components/header/header.component';
 
 
 @NgModule({
@@ -23,7 +26,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     SearchModalComponent,
     TasklistComponent,
     SearchComponent,
-    ProjectComponent
+    TaskStatusPipe,
+    TaskDetailModalComponent,
+    BoardComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

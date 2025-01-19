@@ -5,7 +5,6 @@ import com.ntk.TaskFlow.DTO.CollaboratorDTO;
 import com.ntk.TaskFlow.Entity.Collaborator;
 import com.ntk.TaskFlow.Mapper.ProjectMapper;
 import com.ntk.TaskFlow.Service.CollaboratorService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
