@@ -27,6 +27,8 @@ services:
           max_attempts: 5
     networks:
       - TaskFlowNetwork
+    volumes:
+      - ./Backend/target/TaskFlow-0.0.1-SNAPSHOT.jar:/opt/app/app.jar
 
   mysql:
     image: mysql

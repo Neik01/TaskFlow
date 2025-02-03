@@ -12,7 +12,7 @@ RUN ./mvnw clean install -Dmaven.test.failure.ignore=true
 FROM eclipse-temurin:21-jre-alpine AS final
 WORKDIR /opt/app
 EXPOSE 8080
-COPY --from=builder /opt/app/target/*.jar /opt/app/*.jar
-ENTRYPOINT ["java", "-jar", "/opt/app/*.jar"]
+COPY --from=builder /opt/app/target/TaskFlow-0.0.1-SNAPSHOT.jar /opt/app/app.jar
+ENTRYPOINT ["java", "-jar", "/opt/app/app.jar"]
 
 
