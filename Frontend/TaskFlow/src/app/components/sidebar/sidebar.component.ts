@@ -1,14 +1,19 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
+import { BoardService } from 'src/app/services/board.service';
+import { BoardResponse } from 'src/app/responses/ServerResponse';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   isMenuOpen = false;
   isCreateModalOpen = false;
   isSearchModalOpen = false;
+  boards: BoardResponse[] = [];
+  isCollapsed = false;
+  @Output() collapsedChange = new EventEmitter<boolean>();
 
   mainMenuItems = [
     {
@@ -39,16 +44,25 @@ export class SidebarComponent {
     }
   ];
 
-  boards = [
-    {
-      name: 'TaskFlow App Development'
-    },
-    {
-      name: 'TaskFlow App Development 2'
-    }
-  ];
+  constructor(
+    private elementRef: ElementRef,
+    private boardService: BoardService
+  ) {}
 
-  constructor(private elementRef: ElementRef){}
+  ngOnInit() {
+    this.loadBoards();
+  }
+
+  loadBoards() {
+    this.boardService.getAllBoard().subscribe({
+      next: (boards) => {
+        this.boards = boards;
+      },
+      error: (error) => {
+        console.error('Error loading boards:', error);
+      }
+    });
+  }
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -77,5 +91,10 @@ export class SidebarComponent {
   closeModal() {
     this.isCreateModalOpen = false;
     this.isSearchModalOpen = false;
+  }
+
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
+    this.collapsedChange.emit(this.isCollapsed);
   }
 }

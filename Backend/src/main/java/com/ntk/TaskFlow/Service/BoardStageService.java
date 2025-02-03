@@ -26,4 +26,11 @@ public class BoardStageService {
 
         return this.boardStageRepository.saveAll(stages);
     }
+
+    public void deleteStage(int id) {
+        BoardStage stage = this.boardStageRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("Cannot find stage with id: "+id));
+
+        this.boardStageRepository.delete(stage);
+    }
 }

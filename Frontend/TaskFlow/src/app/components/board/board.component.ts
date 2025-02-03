@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BoardService } from 'src/app/services/board.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -21,6 +21,9 @@ export class BoardComponent implements OnInit{
     activeStage: string | null = null;
     @ViewChild('stageInput') stageInput!: ElementRef;
     selectedTask: TaskResponse | null = null;
+    editingStageId: number | null = null;
+    activeStageMenu: number | null = null;
+    @ViewChild('stageNameInput') stageNameInput!: ElementRef;
 
   
     constructor(private route: ActivatedRoute, 
@@ -29,7 +32,7 @@ export class BoardComponent implements OnInit{
   
     ngOnInit() {
   
-        this.boardService.getBoardById(1).subscribe((data:BoardResponse) => {
+        this.boardService.getBoardById(this.route.snapshot.params['id']).subscribe((data:BoardResponse) => {
           this.handleBoardResponse(data);
           
         });
@@ -37,17 +40,14 @@ export class BoardComponent implements OnInit{
    
    handleBoardResponse(data: BoardResponse) {
       this.board = data;
-      this.stages = this.board.stages.sort((stage1,stage2)=>stage1.position - stage2.position) || [];
-      if (this.stages.length === 0 || this.stages[0].name !== 'No stage') {
-        this.stages.unshift({ id: -1, name: 'No stage', tasks: [] });
-      }
-      const noStageTasks = this.board.tasks.filter(task => !task.stage);
-      this.stages[0].tasks = noStageTasks;
+      // Sort stages by position
+      this.stages = this.board.stages.sort((stage1, stage2) => stage1.position - stage2.position) || [];
+      
+      // Sort tasks within each stage
       this.stages.forEach(stage => {
-        if (stage.name !== 'No stage') {
-          stage.tasks = this.board.tasks.filter(task => task.stage?.id === stage.id)
-            .sort((a, b) => a.positionInStage - b.positionInStage);
-        }
+        stage.tasks = this.board.tasks
+          .filter(task => task.stage?.id === stage.id)
+          .sort((a, b) => a.positionInStage - b.positionInStage);
       });
     }
   
@@ -129,7 +129,7 @@ export class BoardComponent implements OnInit{
       event.container.data.forEach((task: any, index: number) => {
         targetPositionMap[task.id] = index;
       });
-      console.log()
+      
       // Send both position maps to backend
       this.ts.updateTaskPos(
         targetPositionMap,
@@ -167,5 +167,90 @@ export class BoardComponent implements OnInit{
       this.boardService.getBoardById(this.board.id).subscribe((data:BoardResponse) => {
             this.handleBoardResponse(data);
       });
+    }
+
+    loadBoard() {
+      this.boardService.getBoardById(this.route.snapshot.params['id']).subscribe((data: BoardResponse) => {
+        this.handleBoardResponse(data);
+      });
+    }
+
+    // Toggle stage menu dropdown
+    toggleStageMenu(event: Event, stageId: number) {
+      event.stopPropagation(); // Prevent event bubbling
+      this.activeStageMenu = this.activeStageMenu === stageId ? null : stageId;
+    }
+
+    // Start editing stage name
+    startEditingStage(event: Event, stage: any) {
+      event.stopPropagation(); // Prevent event bubbling
+      this.editingStageId = stage.id;
+      this.activeStageMenu = null;
+      setTimeout(() => {
+        this.stageNameInput?.nativeElement.focus();
+      });
+    }
+
+    // Update stage name
+    updateStageName(stage: any) {
+      if (stage.name.trim()) {
+        this.boardService.updateStage(stage.id, stage.name).subscribe({
+          next: (data: BoardResponse) => {
+            this.handleBoardResponse(data);
+            this.editingStageId = null;
+          },
+          error: (error) => {
+            console.error('Error updating stage:', error);
+          }
+        });
+      }
+    }
+
+    // Delete stage
+    deleteStage(event: Event, stage: any) {
+      event.stopPropagation(); // Prevent event bubbling
+      if (confirm('Are you sure you want to delete this stage? All tasks in this stage will be moved to the first stage.')) {
+        // Immediately remove stage from local list
+        const stageIndex = this.stages.findIndex(s => s.id === stage.id);
+        if (stageIndex > -1) {
+          this.stages.splice(stageIndex, 1);
+        }
+        
+        this.boardService.deleteStage(stage.id).subscribe({
+          next: (response: BoardResponse) => {
+            if (response) {
+              this.handleBoardResponse(response);
+            }
+            this.activeStageMenu = null;
+          },
+          error: (error) => {
+            console.error('Error deleting stage:', error);
+            // Revert the local deletion on error
+            if (stageIndex > -1) {
+              this.stages.splice(stageIndex, 0, stage);
+            }
+            alert('Failed to delete stage. Please try again.');
+          }
+        });
+      }
+    }
+
+    // Close menu when clicking outside
+    @HostListener('document:click', ['$event'])
+    closeMenuOnClickOutside(event: Event) {
+      if (this.activeStageMenu !== null && !(event.target as Element).closest('.stage-menu')) {
+        this.activeStageMenu = null;
+      }
+    }
+
+    getDropdownPosition(buttonElement: HTMLElement) {
+      if (buttonElement) {
+        const rect = buttonElement.getBoundingClientRect();
+        return {
+          top: rect.bottom + 8 + 'px',  // 8px gap
+          left: (rect.right - 120) + 'px' // menu width is 120px
+        };
+      }
+      return { top: '0px', left: '0px' };
     }
 }

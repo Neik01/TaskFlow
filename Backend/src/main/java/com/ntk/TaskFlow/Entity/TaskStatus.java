@@ -1,5 +1,5 @@
 package com.ntk.TaskFlow.Entity;
 
 public enum TaskStatus {
-    PENDING, IN_PROGRESS, COMPLETED,OVERDUE
+     IN_PROGRESS, COMPLETED,OVERDUE, DUE_SOON
 }

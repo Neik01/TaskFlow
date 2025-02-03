@@ -2,6 +2,7 @@ package com.ntk.TaskFlow.Controller;
 
 import com.ntk.TaskFlow.DTO.Request.ChangeTaskPosReq;
 import com.ntk.TaskFlow.DTO.Request.CreateTaskReq;
+import com.ntk.TaskFlow.DTO.Request.UpdateTaskReq;
 import com.ntk.TaskFlow.DTO.TaskDTO;
 import com.ntk.TaskFlow.Entity.Task;
 import com.ntk.TaskFlow.Entity.TaskPriority;
@@ -67,6 +68,17 @@ public class TaskController {
         List<Task> result = this.taskService.findByStatusAndPriority(priority);
 
         return new ResponseEntity<>(mapper.mapListTaskToListDTO(result),HttpStatus.OK);
+    }
+
+    @PutMapping("/updateTask")
+    public ResponseEntity<?> updateTask(@RequestBody UpdateTaskReq req){
+        try {
+            System.out.println("req = " + req);
+            return new ResponseEntity<>(mapper.mapTaskToDTO(this.taskService.updateTask(req)),HttpStatus.OK);
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 

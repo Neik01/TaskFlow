@@ -17,27 +17,27 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardStageRepository boardStageRepository;
 
-    public Board createBoard(String projectName, String projectDescription){
+    public Board createBoard(String boardName, String boardDescription){
         Board newBoard = new Board();
-        newBoard.setName(projectName);
-        newBoard.setDescription(projectDescription);
+        newBoard.setName(boardName);
+        newBoard.setDescription(boardDescription);
         return this.boardRepository.save(newBoard);
     }
     public List<Board> getAllBoards() {
         return boardRepository.findAll();
     }
 
-    public Optional<Board> getProjectById(int id) {
+    public Optional<Board> getBoardById(int id) {
         return boardRepository.findById(id);
     }
 
-    public void deleteProject(int id) {
+    public void deleteBoard(int id) {
         boardRepository.deleteById(id);
     }
 
-    public Optional<Board> createStage(String stageName, int projectId){
+    public Optional<Board> createStage(String stageName, int boardId){
 
-        Optional<Board> pr = this.boardRepository.findById(projectId);
+        Optional<Board> pr = this.boardRepository.findById(boardId);
         if (pr.isPresent()){
             BoardStage boardStage = new BoardStage();
             Board board = pr.get();

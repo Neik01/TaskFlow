@@ -17,21 +17,57 @@
         id="{{ stage.id }}"
       >
         <!-- Column Header -->
-        <div class="flex justify-between items-center text-lg font-semibold">
-          <span class="truncate hover:animate-marquee whitespace-nowrap overflow-hidden" 
-              title="{{ stage.name }}">
-            {{ stage.name }}
-          </span>
-          <button class="text-gray-500 hover:text-gray-700">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-            </svg>
-          </button>
+        <div class="flex items-center justify-between group">
+          <!-- Stage Title -->
+          <div class="flex-1 text-sm font-semibold">
+            <input *ngIf="editingStageId === stage.id"
+                   #stageNameInput
+                   [(ngModel)]="stage.name"
+                   (blur)="updateStageName(stage)"
+                   (keyup.enter)="updateStageName(stage)"
+                   class="w-full px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-[#441752]"
+            >
+            <span *ngIf="editingStageId !== stage.id" 
+                  class="block py-1 px-2">
+              {{ stage.name }}
+            </span>
+          </div>
+
+          <!-- Menu Button -->
+          <div class="relative">
+            <button 
+              (click)="toggleStageMenu($event, stage.id)"
+              class="p-1.5 rounded hover:bg-gray-200"
+            >
+              <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="6" r="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <circle cx="12" cy="18" r="2"/>
+              </svg>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div *ngIf="activeStageMenu === stage.id"
+                 class="absolute right-0 mt-1 bg-white rounded-lg shadow-lg overflow-hidden z-50 min-w-[100px]">
+              <button 
+                (click)="startEditingStage($event, stage)"
+                class="w-full px-3 py-1.5 text-left text-sm text-gray-600 hover:bg-gray-50"
+              >
+                Edit stage
+              </button>
+              <button 
+                (click)="deleteStage($event, stage)"
+                class="w-full px-3 py-1.5 text-left text-sm text-red-500 hover:bg-gray-50"
+              >
+                Delete stage
+              </button>
+            </div>
+          </div>
         </div>
   
         <!-- Task Container -->
         <div
-          class="flex flex-col gap-2 min-h-4"
+          class="flex flex-col gap-2"
           cdkDropList
           [cdkDropListData]="stage.tasks"
           (cdkDropListDropped)="dropTask($event)"
@@ -39,69 +75,51 @@
           <!-- Individual Task -->
           <div
             *ngFor="let task of stage.tasks"
-            class="bg-white shadow rounded-lg p-2 cursor-pointer hover:bg-gray-50"
+            class="bg-white shadow rounded-lg p-3 cursor-pointer hover:bg-gray-50"
             cdkDrag
             (click)="openTaskDetail(task)"
           >
-            <!-- Task Title and Status -->
-            <div class="flex justify-between items-start mb-1">
-              <div class="font-medium">{{ task.title }}</div>
-              <div *ngIf="task.status" [ngClass]="{
-                'bg-yellow-100 text-yellow-800': task.status === 'IN_PROGRESS',
-                'bg-red-100 text-red-800': task.status === 'OVERDUE',
-                'bg-green-100 text-green-800': task.status === 'COMPLETED',
-                'bg-gray-100 text-gray-800': task.status === 'PENDING'
-              }" class="text-xs px-2 py-1 rounded-full">
-                {{ task.status | taskStatus }}
-              </div>
-            </div>
-            
-            <!-- Task Description -->
-            <div *ngIf="task.description" class="text-sm text-gray-500">{{ task.description }}</div>
+            <h3 class="font-medium mb-1">{{ task.title }}</h3>
+            <p *ngIf="task.description" class="text-sm text-gray-500 mb-2">{{ task.description }}</p>
             
             <!-- Task Metadata -->
-            <div class="flex items-center gap-2 mt-2">
-              <!-- Only show if deadline exists -->
-              <div *ngIf="task.deadline" class="flex items-center text-xs text-gray-600">
-                <svg class="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
-                </svg>
-                {{ task.deadline | date:'dd/MM/yyyy' }}
-              </div>
-  
-              <!-- Only show if priority exists -->
-              <div *ngIf="task.priority" class="flex items-center gap-1">
-                <div [ngClass]="{
-                  'bg-red-400': task.priority === 'HIGH',
-                  'bg-yellow-400': task.priority === 'MEDIUM',
-                  'bg-blue-400': task.priority === 'LOW'
-                }" class="w-2 h-2 rounded-full"></div>
-              </div>
+            <div class="flex items-center gap-2 text-xs text-gray-500">
+              <span *ngIf="task.deadline" class="flex items-center">
+                <i class="far fa-clock mr-1"></i>
+                {{ task.deadline | date:'MMM d' }}
+              </span>
+              <span *ngIf="task.priority" 
+                    class="w-2 h-2 rounded-full"
+                    [ngClass]="{
+                      'bg-red-400': task.priority === 'HIGH',
+                      'bg-yellow-400': task.priority === 'MEDIUM',
+                      'bg-blue-400': task.priority === 'LOW'
+                    }">
+              </span>
             </div>
           </div>
         </div>
   
-        <!-- Add Card Button (Trello Style) -->
+        <!-- Add Card Button -->
         <button
           (click)="addTask(stage)"
-          class="flex items-center mt-2 px-2 py-1.5 text-gray-600 hover:bg-gray-200 rounded-md transition-colors w-full"
+          class="flex items-center mt-2 px-3 py-1.5 text-gray-600 hover:bg-gray-200 rounded-md transition-colors"
         >
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
           Add a card
         </button>
       </div>
   
-      <!-- Add List Button (Trello Style) -->
+      <!-- Add List Button -->
       <div class="w-72 shrink-0">
         <div *ngIf="!isAddStage" 
              (click)="toggleAddStage()"
              class="bg-gray-100 hover:bg-gray-200 rounded-lg px-4 py-2.5 cursor-pointer transition-colors">
           <div class="flex items-center text-gray-600">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
             Add another list
           </div>
@@ -129,7 +147,7 @@
               class="text-gray-500 hover:text-gray-700"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
           </div>
@@ -155,7 +173,8 @@
   <app-task-detail-modal
     *ngIf="selectedTask"
     [task]="selectedTask"
-    (close)="closeTaskDetail()"
-    (taskUpdated)="onTaskUpdated()"
+    [boardId]="board.id"
+    (close)="selectedTask = null"
+    (taskUpdated)="loadBoard()"
   ></app-task-detail-modal>
   

@@ -1,169 +1,175 @@
-<div class="bg-white rounded-lg shadow-lg p-6 w-max relative"
-role="dialog">
-  
-  
-    <form [formGroup]="createForm" class="space-y-4">
+<div class="fixed inset-0 bg-[#441752]/50 flex justify-center items-start pt-20 z-50 backdrop-blur-sm">
+  <div class="bg-white rounded-lg shadow-xl w-[480px] relative">
+    <!-- Close button -->
+    <button 
+      (click)="onCancel()"
+      class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <!-- Header -->
+    <div class="p-6 border-b border-[#8174A0]/10">
+      <h2 class="text-lg font-semibold text-[#441752]">Create task</h2>
+    </div>
+
+    <!-- Content -->
+    <form [formGroup]="createForm" (ngSubmit)="submitCreateForm()" class="p-6 space-y-4">
       <!-- Title -->
-      <input
-        formControlName="title"
-        type="text"
-        placeholder="Tiêu đề"
-        class="text-gray-700 font-semibold text-lg border-b focus:outline-none w-full pb-2"
-      />
-  
-      <!-- Description -->
-      <textarea
-        formControlName="description"
-        placeholder="Mô tả"
-        class="text-gray-500 text-sm mt-4 border-b focus:outline-none w-full"
-      ></textarea>
-  
-      <!-- Buttons -->
-      <div class="flex items-center gap-2 mt-4">
-        <button
-          (click)="openDatePicker()"
-  
-          class="border rounded-md px-2 py-1 text-gray-600 hover:bg-gray-100"
-        >
-  
-        <p *ngIf="this.combinedDateTime!=''" class="">
-  
-          {{this.combinedDateTime}}
-        </p>
-        <p *ngIf="this.combinedDateTime ===''">
-          📅 Ngày đến hạn
-        </p>
-  
-        </button>
-        <div>
-          <select
-          [ngModelOptions]="{standalone: true}"
-            [(ngModel)]="selectedPriority"
-            class="border rounded-md px-2 py-1 text-gray-600 hover:bg-gray-100 focus:outline-none"
-          >
-  
-            <option value="HIGH">Cao</option>
-            <option value="MEDIUM">Trung bình</option>
-            <option value="LOW">Thấp</option>
-  
-          </select>
-        </div>
-        <div>
-          <select
-            [ngModelOptions]="{standalone: true}"
-            [(ngModel)]="selectedStatus"
-            class="border rounded-md px-2 py-1 text-gray-600 hover:bg-gray-100 focus:outline-none"
-          >
-            <option value="PENDING">Cần làm</option>
-            <option value="IN_PROGRESS">Đang thực hiện</option>
-            <option value="COMPLETED">Hoàn thành</option>
-          </select>
-        </div>
-        <!-- <button
-          class="border rounded-md px-2 py-1 text-gray-600 hover:bg-gray-100"
-        >
-          ⏰ Nhắc trước
-        </button>
-       -->
+      <div>
+        <label class="block text-sm font-medium text-[#441752] mb-1">Title</label>
+        <input
+          formControlName="title"
+          type="text"
+          placeholder="Enter task title..."
+          class="w-full px-3 py-2 border border-[#8174A0]/30 rounded-md 
+                 focus:outline-none focus:ring-2 focus:ring-[#8174A0]/50 focus:border-transparent
+                 placeholder-[#8174A0]/50 transition-all"
+        />
       </div>
-  
-      <!-- Bottom Controls -->
-      <div class="flex justify-end items-center mt-4">
-  
-        <div>
-          <button (click)="onCancel()" class="text-gray-600 hover:bg-gray-100 px-3 py-1 rounded-md">
-            Hủy
+
+      <!-- Description -->
+      <div>
+        <label class="block text-sm font-medium text-[#441752] mb-1">Description</label>
+        <textarea
+          formControlName="description"
+          placeholder="Add task description..."
+          rows="3"
+          class="w-full px-3 py-2 border border-[#8174A0]/30 rounded-md 
+                 focus:outline-none focus:ring-2 focus:ring-[#8174A0]/50 focus:border-transparent
+                 placeholder-[#8174A0]/50 transition-all resize-none"
+        ></textarea>
+      </div>
+
+      <!-- Task Properties -->
+      <div class="flex flex-wrap gap-4">
+        <!-- Due Date -->
+        <div class="flex-1 min-w-[200px]">
+          <button
+            type="button"
+            (click)="openDatePicker()"
+            class="w-full px-3 py-2 text-left border border-[#8174A0]/30 rounded-md hover:bg-[#8174A0]/5 transition-colors"
+          >
+            <span *ngIf="combinedDateTime === ''" class="text-[#8174A0]/70">
+              <i class="fas fa-calendar-alt mr-2"></i>Due date
+            </span>
+            <span *ngIf="combinedDateTime !== ''" class="text-[#441752]">
+              {{ combinedDateTime }}
+            </span>
+          </button>
+        </div>
+
+        <!-- Priority -->
+        <div class="flex-1 min-w-[200px]">
+          <select
+            [(ngModel)]="selectedPriority"
+            [ngModelOptions]="{standalone: true}"
+            class="w-full px-3 py-2 border border-[#8174A0]/30 rounded-md 
+                   focus:outline-none focus:ring-2 focus:ring-[#8174A0]/50 focus:border-transparent
+                   text-[#441752] appearance-none bg-white cursor-pointer"
+          >
+            <option value="HIGH">High Priority</option>
+            <option value="MEDIUM">Medium Priority</option>
+            <option value="LOW">Low Priority</option>
+          </select>
+        </div>
+
+        <!-- Stage -->
+        <div class="flex-1 min-w-[200px]">
+          <select
+            [(ngModel)]="selectedStageId"
+            [ngModelOptions]="{standalone: true}"
+            class="w-full px-3 py-2 border border-[#8174A0]/30 rounded-md 
+                   focus:outline-none focus:ring-2 focus:ring-[#8174A0]/50 focus:border-transparent
+                   text-[#441752] appearance-none bg-white cursor-pointer"
+          >
+            <option [value]="null">No stage</option>
+            <option *ngFor="let stage of stages" [value]="stage.id">
+              {{stage.name}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-[#8174A0]/10">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="px-4 py-2 text-[#441752] hover:bg-[#8174A0]/10 rounded-md transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="!createForm.valid"
+          class="px-4 py-2 bg-gradient-to-r from-[#441752] to-[#8174A0] text-white rounded-md
+                 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all
+                 shadow-sm hover:shadow-md"
+        >
+          Create task
+        </button>
+      </div>
+    </form>
+
+    <!-- Date Picker Modal -->
+    <div *ngIf="showDatePicker" class="fixed inset-0 bg-[#441752]/50 flex justify-center items-center z-[60] backdrop-blur-sm">
+      <div class="bg-white rounded-lg shadow-xl p-6 w-[320px]">
+        <h2 class="text-lg font-semibold text-[#441752] mb-2">Set due date</h2>
+        <p class="text-sm text-[#8174A0] mb-4">Choose date and time</p>
+
+        <!-- Quick Options -->
+        <div class="grid grid-cols-2 gap-2 mb-4">
+          <button
+            *ngFor="let option of quickDateOptions"
+            (click)="setQuickDate(option.value )"
+            class="px-4 py-2 text-sm text-[#441752] hover:bg-[#8174A0]/10 rounded-md border border-[#8174A0]/30 transition-colors"
+          >
+            {{ option.label }}
+          </button>
+        </div>
+
+        <!-- Custom DateTime -->
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-[#441752] mb-1">Date</label>
+            <input
+              type="date"
+              [(ngModel)]="selectedDate"
+              [ngModelOptions]="{standalone: true}"
+              class="w-full px-3 py-2 border border-[#8174A0]/30 rounded-md 
+                     focus:outline-none focus:ring-2 focus:ring-[#8174A0]/50 focus:border-transparent"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-[#441752] mb-1">Time</label>
+            <input
+              type="time"
+              [(ngModel)]="selectedTime"
+              [ngModelOptions]="{standalone: true}"
+              class="w-full px-3 py-2 border border-[#8174A0]/30 rounded-md 
+                     focus:outline-none focus:ring-2 focus:ring-[#8174A0]/50 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-[#8174A0]/10">
+          <button
+            (click)="closeDatePicker()"
+            class="px-4 py-2 text-[#441752] hover:bg-[#8174A0]/10 rounded-md transition-colors"
+          >
+            Cancel
           </button>
           <button
-            (click)="submitCreateForm()"
-            type="submit"
-            class="bg-red-400 text-white px-4 py-1 rounded-md hover:bg-red-500"
-  
+            (click)="saveDateTime()"
+            class="px-4 py-2 bg-gradient-to-r from-[#441752] to-[#8174A0] text-white rounded-md
+                   hover:opacity-90 transition-all shadow-sm hover:shadow-md"
           >
-  
-            <div>
-              Tạo nhiệm vụ
-            </div>
+            Confirm
           </button>
         </div>
       </div>
-      <div *ngIf="showDatePicker" class="fixed inset-0 bg-black/50 flex justify-center items-center z-[60]">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-[320px]">
-          <!-- Header -->
-          <div class="mb-6">
-            <h2 class="text-lg font-semibold text-gray-800">Đặt thời hạn</h2>
-            <p class="text-sm text-gray-500 mt-1">Chọn ngày và giờ đến hạn</p>
-          </div>
-  
-          <!-- Quick Options -->
-          <div class="grid grid-cols-2 gap-2 mb-4">
-            <button
-              (click)="setQuickDate('today')"
-              class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md border transition-colors">
-              Hôm nay
-            </button>
-            <button
-              (click)="setQuickDate('tomorrow')"
-              class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md border transition-colors">
-              Ngày mai
-            </button>
-            <button
-              (click)="setQuickDate('nextWeek')"
-              class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md border transition-colors">
-              Tuần sau
-            </button>
-            <button
-              (click)="setQuickDate('nextMonth')"
-              class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md border transition-colors">
-              Tháng sau
-            </button>
-          </div>
-  
-          <!-- Custom DateTime Selector -->
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1">Chọn ngày</label>
-              <input
-                type="date"
-                [(ngModel)]="selectedDate"
-                [ngModelOptions]="{standalone: true}"
-                class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-  
-            <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1">Chọn giờ</label>
-              <input
-                type="time"
-                [(ngModel)]="selectedTime"
-                [ngModelOptions]="{standalone: true}"
-                class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-  
-          <!-- Action Buttons -->
-          <div class="flex justify-end gap-2 mt-6">
-            <button
-              (click)="closeDatePicker()"
-              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors">
-              Hủy
-            </button>
-            <button
-              (click)="saveDateTime()"
-              class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-              Xác nhận
-            </button>
-          </div>
-        </div>
-      </div>
-  
-    </form>
-  
-  
-  
-  
-  
-  
-  
+    </div>
+  </div>
 </div>

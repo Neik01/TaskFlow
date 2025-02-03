@@ -17,9 +17,8 @@ export class BoardService {
      return this.httpClient.get<BoardResponse[]>(this.boardUrl);
    }
  
-   public createBoard(formValue:any){
-     console.log(formValue);
-     return this.httpClient.post<BoardResponse>(this.boardUrl,formValue);
+   public createBoard(formValue: {name: string, description: string}) {
+     return this.httpClient.post<BoardResponse>(this.boardUrl, formValue);
    }
  
    public getBoardById(id:number){
@@ -27,10 +26,20 @@ export class BoardService {
    }
  
    public createStage(boardId:number,columnName:string){
-     return this.httpClient.post<BoardResponse>(this.boardUrl+"/createColumn",{name:columnName,boardId:boardId});
+     return this.httpClient.post<BoardResponse>(this.boardUrl+"/createStage",{name:columnName,boardId:boardId});
    }
  
    public updateStages(columns:any){
-     return this.httpClient.put<BoardResponse[]>(this.boardUrl+"/updateColumn",{columns:columns});
+     return this.httpClient.put<BoardResponse[]>(this.boardUrl+"/updateStage",{columns:columns});
+   }
+
+   // Update stage
+   public updateStage(stageId: number, name: string) {
+     return this.httpClient.put<BoardResponse>(`${this.boardUrl}/stages/${stageId}`, { name });
+   }
+
+   // Delete stage
+   public deleteStage(stageId: number) {
+     return this.httpClient.delete<BoardResponse>(`${this.boardUrl}/stages/${stageId}`);
    }
 }

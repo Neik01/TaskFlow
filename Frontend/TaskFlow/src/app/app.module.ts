@@ -15,6 +15,8 @@ import { TaskStatusPipe } from './pipes/task-status.pipe';
 import { TaskDetailModalComponent } from './components/modal/task-detail-modal/task-detail-modal.component';
 import { BoardComponent } from './components/board/board.component';
 import { HeaderComponent } from './components/header/header.component';
+import { CreateBoardModalComponent } from './components/modal/create-board-modal/create-board-modal.component';
+import { BoardListComponent } from './components/board-list/board-list.component';
 
 
 @NgModule({
@@ -29,7 +31,9 @@ import { HeaderComponent } from './components/header/header.component';
     TaskStatusPipe,
     TaskDetailModalComponent,
     BoardComponent,
-    HeaderComponent
+    HeaderComponent,
+    CreateBoardModalComponent,
+    BoardListComponent
   ],
   imports: [
     BrowserModule,

@@ -2,12 +2,14 @@ package com.ntk.TaskFlow.Service;
 
 import com.ntk.TaskFlow.DTO.Request.ChangeTaskPosReq;
 import com.ntk.TaskFlow.DTO.Request.CreateTaskReq;
+import com.ntk.TaskFlow.DTO.Request.UpdateTaskReq;
 import com.ntk.TaskFlow.Entity.*;
 import com.ntk.TaskFlow.Repository.BoardRepository;
 import com.ntk.TaskFlow.Repository.BoardStageRepository;
 import com.ntk.TaskFlow.Repository.TaskRepository;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.objenesis.ObjenesisException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -20,13 +22,13 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    private final BoardRepository projectRepository;
+    private final BoardRepository boardRepository;
 
     private final BoardStageRepository boardStageRepository;
 
     public Optional<Task> createTask(CreateTaskReq req) {
 
-        Optional<Board> pr = this.projectRepository.findById(req.projectId());
+        Optional<Board> pr = this.boardRepository.findById(req.boardId());
         Optional<Task> t =Optional.empty();
         if (pr.isPresent()){
             Optional<BoardStage> st = this.boardStageRepository.findById(req.stageId());
@@ -39,7 +41,7 @@ public class TaskService {
             task.setDescription(req.description());
             task.setBoard(board);
             task.setDeadline(req.deadline());
-            task.setStatus(req.status());
+
             if (st.isPresent()){
                 BoardStage stage = st.get();
                 task.setStage(stage);
@@ -76,40 +78,48 @@ public class TaskService {
         List<Integer> currIds = req.currentStage().keySet().stream().toList();
         List<Task> currTask = this.taskRepository.findByIdIn(currIds);
         List<Task> prevTask = this.taskRepository.findByIdIn(prevIds);
-        Optional<BoardStage> prevStage = this.boardStageRepository.findById(req.prevStageId());
+        BoardStage prevStage = this.boardStageRepository.findById(req.prevStageId())
+                .orElseThrow(()->new IllegalArgumentException("Cannot find stage with id:"+req.prevStageId()));
 
-        Optional<BoardStage> currStage = this.boardStageRepository.findById(req.currentStageId());
+        BoardStage currStage = this.boardStageRepository.findById(req.currentStageId())
+                .orElseThrow(()->new IllegalArgumentException("Cannot find stage with id:"+req.currentStageId()));
 
-        //if current stage id of current/destination stage equals -1 means it not belong to any stage
-        //set stage to null
-        if (req.currentStageId()==-1){
-            currTask.forEach(task -> {
-                task.setStage(null);
-                task.setPositionInStage(req.currentStage().get(task.getId()));
-            });
-        }
-        else if(currStage.isPresent())
-            currTask.forEach(task ->{
-                task.setStage(currStage.get());
-                task.setPositionInStage(req.currentStage().get(task.getId()));
-            });
-            else
-                throw new IllegalArgumentException("Cannot find stage with id:"+req.currentStageId());
+        currTask.forEach(task ->{
+            task.setStage(currStage);
+            task.setPositionInStage(req.currentStage().get(task.getId()));
+        });
 
+        prevTask.forEach(task -> {
 
-        //with the previous/source stage, don't need to update stage, just change order position
-        if (prevStage.isPresent()||req.prevStageId()==-1){
-            prevTask.forEach(task -> {
+            task.setPositionInStage(req.prevStage().get(task.getId()));
+        });
 
-                task.setPositionInStage(req.prevStage().get(task.getId()));
-            });
-        }
-        else throw new IllegalArgumentException("Cannot find stage with id:"+req.prevStageId());
 
         HashMap<String,List<Task>> result = new HashMap<>();
         result.put("previous", this.taskRepository.saveAll(prevTask));
         result.put("current",this.taskRepository.saveAll(currTask));
 
         return result;
+    }
+
+    public Task updateTask(UpdateTaskReq req){
+       Task task = this.taskRepository.findById(req.id())
+               .orElseThrow(()->new IllegalArgumentException("Cannot find task with id: "+req.id()));
+
+       Board board = this.boardRepository.findById(req.boardId())
+               .orElseThrow(()->new IllegalArgumentException("Cannot find board with id:"+req.boardId()));
+
+       BoardStage stage = this.boardStageRepository.findById(req.stageId())
+               .orElseThrow(()->new IllegalArgumentException("Cannot find stage with id: "+req.stageId()));
+
+       task.setTitle(req.title());
+       task.setPriority(req.priority());
+       task.setDescription(req.description());
+       task.setDeadline(req.deadline());
+       task.setStatus(req.status());
+       task.setBoard(board);
+       task.setStage(stage);
+
+       return this.taskRepository.save(task);
     }
 }

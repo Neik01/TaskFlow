@@ -1,23 +1,19 @@
-<header class="bg-[#1E1E2F] h-[44px] px-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50 border-b border-[#A6216B]/20">
+<header class="bg-gradient-to-r from-[#441752] to-[#8174A0] h-[44px] px-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50 border-b border-[#A888B5]/20">
   <!-- Left section -->
   <div class="flex items-center gap-4">
     <button class="text-white hover:bg-white/10 px-3 py-1 rounded-sm text-sm flex items-center">
       Workspaces
       <i class="fas fa-chevron-down ml-2 text-xs"></i>
     </button>
-    <button class="text-white hover:bg-white/10 px-3 py-1 rounded-sm text-sm flex items-center">
-      Recent
-      <i class="fas fa-chevron-down ml-2 text-xs"></i>
-    </button>
+    
     <button class="text-white hover:bg-white/10 px-3 py-1 rounded-sm text-sm flex items-center">
       Starred
       <i class="fas fa-chevron-down ml-2 text-xs"></i>
     </button>
-    <button class="text-white hover:bg-white/10 px-3 py-1 rounded-sm text-sm flex items-center">
-      Templates
-      <i class="fas fa-chevron-down ml-2 text-xs"></i>
-    </button>
-    <button class="bg-[#A6216B] text-white hover:bg-[#C4317B] transition-colors px-3 py-1 rounded-sm text-sm">
+   
+    <button 
+      (click)="openCreateBoardModal()"
+      class="bg-white/20 text-white hover:bg-white/30 transition-colors px-3 py-1 rounded-sm text-sm backdrop-blur-sm">
       Create
     </button>
   </div>
@@ -33,7 +29,7 @@
       <input 
         type="text" 
         placeholder="Search" 
-        class="bg-[#2D1A2D] text-white placeholder-white/60 px-3 py-1 rounded text-sm w-[180px] focus:outline-none focus:ring-1 focus:ring-[#A6216B] focus:bg-[#1E1E2F]"
+        class="bg-white/10 text-white placeholder-white/60 px-3 py-1 rounded text-sm w-[180px] focus:outline-none focus:ring-1 focus:ring-white/30 focus:bg-white/20 backdrop-blur-sm"
       >
     </div>
     <button class="text-white/80 hover:bg-white/10 w-8 h-8 flex items-center justify-center rounded-sm">
@@ -43,4 +39,10 @@
       <i class="fas fa-question"></i>
     </button>
   </div>
-</header> 
+</header>
+
+<app-create-board-modal 
+  *ngIf="isCreateBoardModalOpen"
+  (close)="closeCreateBoardModal()"
+  (boardCreated)="onBoardCreated()"
+></app-create-board-modal> 

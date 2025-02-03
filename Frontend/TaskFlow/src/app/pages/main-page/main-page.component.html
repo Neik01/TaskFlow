@@ -1,14 +1,21 @@
-<div class="h-screen flex flex-col bg-gradient-to-br from-[#1D1D1D] via-[#2D1A2D] to-[#1D1D1D]">
+<div class="h-screen flex flex-col bg-gradient-to-br from-[#EFB6C8]/20 to-[#FFF]">
   <!-- Header -->
   <app-header class="flex-shrink-0"></app-header>
   
   <!-- Main Content -->
   <div class="flex flex-1 pt-[44px]"> <!-- 44px is header height -->
     <!-- Sidebar -->
-    <app-sidebar class="w-[260px] flex-shrink-0 fixed h-[calc(100vh-44px)]"></app-sidebar>
+    <app-sidebar 
+      class="fixed h-[calc(100vh-44px)]"
+      [class.w-64]="!isSidebarCollapsed"
+      [class.w-8]="isSidebarCollapsed"
+      (collapsedChange)="onSidebarToggle($event)">
+    </app-sidebar>
     
     <!-- Content Area -->
-    <div class="flex-1 ml-[260px] overflow-x-auto bg-gradient-to-br from-[#2D1A2D] via-[#1E1E2F] to-[#2D1A2D]">
+    <div class="flex-1 overflow-x-auto bg-gradient-to-br from-[#EFB6C8]/20 to-[#FFF] transition-all duration-300"
+         [class.ml-64]="!isSidebarCollapsed"
+         [class.ml-8]="isSidebarCollapsed">
       <router-outlet></router-outlet>
     </div>
   </div>

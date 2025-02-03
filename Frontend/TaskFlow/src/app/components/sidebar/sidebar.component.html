@@ -1,46 +1,65 @@
-<div class="h-full bg-[#1E1E2F] text-white flex flex-col overflow-y-auto border-r border-[#A6216B]/20">
+<div class="h-full bg-gradient-to-b from-[#441752] to-[#8174A0] text-white flex flex-col overflow-y-auto border-r border-white/10 relative transition-all duration-300"
+     [class.w-64]="!isCollapsed"
+     [class.w-8]="isCollapsed">
+  
   <!-- Workspace Header -->
-  <div class="p-4 flex items-center justify-between hover:bg-[#A6216B]/10 cursor-pointer">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 bg-[#A6216B] rounded flex items-center justify-center text-lg font-semibold">
+  <div class="p-3 flex items-center justify-between hover:bg-white/10 cursor-pointer backdrop-blur-sm relative"
+       [class.opacity-0]="isCollapsed">
+    <div class="flex items-center gap-2 overflow-hidden">
+      <div class="w-6 h-6 bg-white/20 rounded flex-shrink-0 flex items-center justify-center text-sm font-semibold backdrop-blur-sm">
         T
       </div>
       <div>
-        <div class="font-semibold">TaskFlow Workspace</div>
-        <div class="text-sm text-gray-400">Free</div>
+        <div class="font-semibold text-sm whitespace-nowrap">TaskFlow Workspace</div>
+        <div class="text-xs text-gray-400">Free</div>
       </div>
     </div>
   </div>
 
-  <!-- Main Navigation -->
-  <div class="flex-1 overflow-y-auto">
+  <!-- Toggle Button - Always visible -->
+  <div class="absolute right-0.5 top-3 z-50">
+    <button (click)="toggleSidebar()" 
+            class="bg-white rounded-full w-6 h-6 shadow-lg hover:bg-gray-100 transition-colors flex items-center justify-center">
+      <i [class]="isCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left'" 
+         class="text-[#441752] text-xs"></i>
+    </button>
+  </div>
+
+  <!-- Main Navigation - Hidden when collapsed -->
+  <div class="flex-1 overflow-y-auto" [class.hidden]="isCollapsed">
     <!-- Core Features -->
-    <div class="px-4 py-3">
+    <div class="px-3 py-2">
       <a *ngFor="let item of mainMenuItems" 
          [routerLink]="item.route"
-         class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-[#A6216B]/10 cursor-pointer text-gray-300 hover:text-white">
+         class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/10 cursor-pointer text-white/90 hover:text-white backdrop-blur-sm text-sm">
         <i [class]="item.icon"></i>
         <span>{{ item.label }}</span>
       </a>
     </div>
 
     <!-- Workspace Views -->
-    <div class="px-4 pt-5">
-      <div class="text-xs font-semibold text-gray-400 mb-3">Workspace views</div>
+    <div class="px-3 pt-4">
+      <div class="text-xs font-semibold text-gray-400 mb-2">Workspace views</div>
       <div *ngFor="let view of workspaceViews" 
-           class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-[#A6216B]/10 cursor-pointer text-gray-300 hover:text-white">
+           class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/10 cursor-pointer text-white/90 hover:text-white backdrop-blur-sm text-sm">
         <i [class]="view.icon"></i>
         <span>{{ view.label }}</span>
       </div>
     </div>
 
     <!-- Your Boards -->
-    <div class="px-4 pt-5">
-      <div class="text-xs font-semibold text-gray-400 mb-3">Your boards</div>
+    <div class="px-3 pt-4">
+      <div class="text-xs font-semibold text-gray-400 mb-2">Your boards</div>
       <div *ngFor="let board of boards" 
-           class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-[#A6216B]/10 cursor-pointer text-gray-300 hover:text-white">
-      
+           [routerLink]="['/boards', board.id]"
+           class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/10 cursor-pointer text-white/90 hover:text-white backdrop-blur-sm text-sm">
+        <i class="fas fa-clipboard text-gray-400"></i>
         <span>{{ board.name }}</span>
+      </div>
+      
+      <!-- Show message if no boards -->
+      <div *ngIf="boards.length === 0" class="text-xs text-gray-400 px-2 py-1.5">
+        No boards yet
       </div>
     </div>
   </div>

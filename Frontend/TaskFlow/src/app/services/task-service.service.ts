@@ -42,4 +42,8 @@ export class TaskServiceService {
     return this.httpClient.put<TaskResponse[]>(this.taskUrl+"/changePos",{currentStage:currentStage,prevStage:previousStage,prevStageId:prevStageId,currentStageId:currentStageId});
 
   }
+
+  public updateTask(task:any) {
+    return this.httpClient.put<TaskResponse>(`${this.taskUrl}/updateTask`, task);
+  }
 }

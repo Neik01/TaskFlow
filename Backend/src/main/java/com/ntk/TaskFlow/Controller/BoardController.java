@@ -40,20 +40,20 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BoardDTO> getBoardById(@PathVariable int id) {
-        Optional<Board> project = boardService.getProjectById(id);
+        Optional<Board> project = boardService.getBoardById(id);
         return project.map(project1 -> new ResponseEntity<>(mapper.mapBoardToDTO(project1),HttpStatus.OK))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBoard(@PathVariable int id) {
-        boardService.deleteProject(id);
+        boardService.deleteBoard(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/createStage")
     public ResponseEntity<?> createStage(@RequestBody CreateStagesReq req){
-        Optional<Board> pr = this.boardService.createStage(req.name(), req.projectId());
+        Optional<Board> pr = this.boardService.createStage(req.name(), req.boardId());
         return pr.map(project1 -> new ResponseEntity<>(mapper.mapBoardToDTO(project1),HttpStatus.CREATED))
                 .orElseGet(() -> ResponseEntity.notFound().build());
 
@@ -65,4 +65,15 @@ public class BoardController {
         return new ResponseEntity<>(mapper.mapListProjectStageToListDTO(this.projectStageService.changeStagePos(req)),HttpStatus.OK);
 
     }
+
+    @DeleteMapping("/stages/{id}")
+    public ResponseEntity<?> deleteStage(@PathVariable int id) {
+        try {
+            projectStageService.deleteStage(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

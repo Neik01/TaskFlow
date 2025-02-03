@@ -5,9 +5,9 @@ export interface TaskResponse{
     description: string;
     priority: "HIGH" | "MEDIUM" | "LOW"; // Enum-like typing for priority
     status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "OVERDUE";
-    deadline: Date;
-    createdAt: Date;
-    updatedAt: Date;
+    deadline: string | Date | null;  // Allow both string and Date
+    createdAt: string | Date;
+    updatedAt: string | Date;
     collaborator: string | null; 
     positionInStage:number;
     stage: Stage|null;

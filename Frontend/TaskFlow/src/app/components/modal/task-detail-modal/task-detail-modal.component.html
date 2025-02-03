@@ -1,214 +1,215 @@
 <div class="fixed inset-0 bg-black/50 flex justify-center items-start pt-20 z-50">
-  <div class="bg-white rounded-lg shadow-xl w-[768px] max-h-[calc(100vh-120px)] overflow-y-auto relative">
-    <!-- Close button -->
-    <button 
-      (click)="onClose()"
-      class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-      </svg>
-    </button>
-
-    <!-- Header -->
-    <div class="p-6 border-b">
-      <div class="flex-1">
-        <input
-          *ngIf="editingField === 'title'"
-          [formControl]="editForm.controls.title"
-          class="text-xl font-semibold w-full border-b focus:outline-none focus:border-blue-500"
-          (blur)="saveField('title')"
-          (keyup.enter)="saveField('title')"
-          #titleInput
-        />
-        <h2 
-          *ngIf="editingField !== 'title'" 
-          (click)="startEditing('title')"
-          class="text-xl font-semibold cursor-pointer hover:bg-gray-50 p-1 rounded"
-        >
-          {{task.title}}
-        </h2>
-      </div>
-    </div>
-
-    <!-- Content -->
-    <div class="p-6 space-y-6">
-      <!-- Description -->
-      <div>
-        <h3 class="text-sm font-medium text-gray-700 mb-2">Mô tả</h3>
-        <textarea
-          *ngIf="editingField === 'description'"
-          [formControl]="editForm.controls.description"
-          class="w-full min-h-[100px] p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="Thêm mô tả chi tiết..."
-          (blur)="saveField('description')"
-          #descInput
-        ></textarea>
-        <p *ngIf="editingField !== 'description'" 
-           (click)="startEditing('description')"
-           class="text-gray-600 cursor-pointer hover:bg-gray-50 p-2 rounded">
-          {{task.description ? task.description : 'Thêm mô tả'}}
-        </p>
-      </div>
-
-      <!-- Metadata -->
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Deadline -->
-        <div>
-          <h3 class="text-sm font-medium text-gray-700 mb-2">Thời hạn</h3>
-          <div class="cursor-pointer hover:bg-gray-50 p-2 rounded" (click)="openDatePicker()">
-            {{ task.deadline ? (task.deadline | date:'dd/MM/yyyy HH:mm') : 'Thêm thời hạn' }}
+  <div class="bg-white rounded-lg shadow-xl w-[768px] max-h-[calc(100vh-120px)] overflow-y-auto">
+    <!-- Header with close button -->
+    <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-start">
+      <div class="flex-1 pr-8">
+        <!-- Title -->
+        <div class="flex items-start gap-2 mb-2">
+          <i class="fas fa-tasks text-gray-500 mt-1"></i>
+          <div class="flex-1">
+            <input
+              *ngIf="editingField === 'title'"
+              #titleInput
+              [formControl]="editForm.controls.title"
+              (blur)="saveField('title')"
+              class="w-full text-xl font-semibold px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-[#441752]"
+            />
+            <h2
+              *ngIf="editingField !== 'title'"
+              (click)="startEditing('title')"
+              class="text-xl font-semibold hover:bg-gray-100 px-2 py-1 rounded cursor-pointer"
+            >
+              {{task.title}}
+            </h2>
           </div>
         </div>
-
-        <!-- Priority -->
-        <div>
-          <h3 class="text-sm font-medium text-gray-700 mb-2">Độ ưu tiên</h3>
-          <select
-            *ngIf="editingField === 'priority'"
-            [(ngModel)]="selectedPriority"
-            (blur)="saveField('priority')"
-            class="border rounded-md px-3 py-1.5 text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            <option value="HIGH">Cao</option>
-            <option value="MEDIUM">Trung bình</option>
-            <option value="LOW">Thấp</option>
-          </select>
-          <div 
-            *ngIf="editingField !== 'priority'"
-            (click)="startEditing('priority')" 
-            class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
-          >
-            <div [ngClass]="{
-              'bg-red-400': task.priority === 'HIGH',
-              'bg-yellow-400': task.priority === 'MEDIUM',
-              'bg-blue-400': task.priority === 'LOW'
-            }" class="w-2 h-2 rounded-full"></div>
-            <span class="text-gray-600">
-              {{ task.priority === 'HIGH' ? 'Cao' : task.priority === 'MEDIUM' ? 'Trung bình' : 'Thấp' }}
-            </span>
+        
+        <!-- Deadline and Completion Status -->
+        <div class="ml-7 flex items-center gap-4">
+          <!-- Stage info -->
+          <div class="text-sm text-gray-600">
+            in list <span class="underline">{{task.stage?.name || 'No stage'}}</span>
           </div>
-        </div>
 
-        <!-- Status -->
-        <div>
-          <h3 class="text-sm font-medium text-gray-700 mb-2">Trạng thái</h3>
-          <div 
-            (click)="startEditing('status')"
-            class="cursor-pointer"
-          >
-            <select
-              *ngIf="editingField === 'status'"
-              [(ngModel)]="selectedStatus"
-              (blur)="saveField('status')"
-              (change)="saveField('status')"
-              class="border rounded-md px-3 py-1.5 text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              #statusInput
+          <!-- Deadline with Checkbox -->
+          <div *ngIf="task.deadline" class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              (change)="handleCheckboxChange($event)"
+              [checked]="task.status === 'COMPLETED'"
+              class="w-4 h-4 rounded border-2 transition-colors duration-200 accent-green-500 cursor-pointer"
             >
-              <option value="PENDING">Cần làm</option>
-              <option value="IN_PROGRESS">Đang thực hiện</option>
-              <option value="COMPLETED">Hoàn thành</option>
-              <option value="OVERDUE">Quá hạn</option>
-            </select>
-            <div 
-              *ngIf="editingField !== 'status'"
-              [ngClass]="{
-                'bg-yellow-100 text-yellow-800': task.status === 'IN_PROGRESS',
-                'bg-red-100 text-red-800': task.status === 'OVERDUE',
-                'bg-green-100 text-green-800': task.status === 'COMPLETED',
-                'bg-gray-100 text-gray-800': task.status === 'PENDING'
-              }" 
-              class="inline-block px-2 py-1 rounded-full text-sm cursor-pointer hover:opacity-80"
-            >
-              {{ task.status | taskStatus }}
+
+            <div class="flex items-center gap-1 text-sm">
+              <i class="far fa-clock text-gray-500"></i>
+              <span [ngClass]="{
+                'text-red-600': isOverdue(),
+                'text-green-600': task.status === 'COMPLETED',
+                'text-gray-600': !isOverdue() && task.status !== 'COMPLETED',
+                'line-through': task.status === 'COMPLETED'
+              }">
+                {{task.deadline | date:'MMM d at h:mm a'}}
+                <span *ngIf="isOverdue() && task.status !== 'COMPLETED'" class="text-red-600">(overdue)</span>
+              </span>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Footer -->
-    <div *ngIf="isEditing" class="px-6 py-4 bg-gray-50 border-t flex justify-end gap-2">
-      <button
-        (click)="toggleEdit()"
-        class="px-4 py-2 text-gray-600 hover:text-gray-800"
+      
+      <button 
+        (click)="onClose()"
+        class="text-gray-400 hover:text-gray-600 transition-colors"
       >
-        Hủy
-      </button>
-      <button
-        (click)="saveChanges()"
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-      >
-        Lưu thay đổi
+        <i class="fas fa-times"></i>
       </button>
     </div>
 
-    <!-- Date Picker Modal -->
-    <div *ngIf="showDatePicker" class="fixed inset-0 bg-black/50 flex justify-center items-center z-[60]">
-      <div class="bg-white rounded-lg shadow-xl p-6 w-[320px]">
-        <!-- Header -->
+    <!-- Content -->
+    <div class="p-6 flex gap-6">
+      <!-- Main Content -->
+      <div class="flex-1">
+        <!-- Description -->
         <div class="mb-6">
-          <h2 class="text-lg font-semibold text-gray-800">Đặt thời hạn</h2>
-          <p class="text-sm text-gray-500 mt-1">Chọn ngày và giờ đến hạn</p>
-        </div>
-
-        <!-- Quick Options -->
-        <div class="grid grid-cols-2 gap-2 mb-4">
-          <button
-            (click)="setQuickDate('today')"
-            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md border transition-colors">
-            Hôm nay
-          </button>
-          <button
-            (click)="setQuickDate('tomorrow')"
-            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md border transition-colors">
-            Ngày mai
-          </button>
-          <button
-            (click)="setQuickDate('nextWeek')"
-            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md border transition-colors">
-            Tuần sau
-          </button>
-          <button
-            (click)="setQuickDate('nextMonth')"
-            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md border transition-colors">
-            Tháng sau
-          </button>
-        </div>
-
-        <!-- Custom DateTime Selector -->
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">Chọn ngày</label>
-            <input
-              type="date"
-              [(ngModel)]="selectedDate"
-              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div class="flex items-center gap-2 mb-2">
+            <i class="fas fa-align-left text-gray-500"></i>
+            <h3 class="font-semibold">Description</h3>
           </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">Chọn giờ</label>
-            <input
-              type="time"
-              [(ngModel)]="selectedTime"
-              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <textarea
+            *ngIf="editingField === 'description'"
+            #descInput
+            [formControl]="editForm.controls.description"
+            (blur)="saveField('description')"
+            rows="3"
+            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#441752] min-h-[100px]"
+            placeholder="Add a more detailed description..."
+          ></textarea>
+          <div
+            *ngIf="editingField !== 'description'"
+            (click)="startEditing('description')"
+            class="min-h-[100px] p-3 rounded-md hover:bg-gray-100 cursor-pointer"
+          >
+            <p *ngIf="task.description" class="whitespace-pre-line">{{task.description}}</p>
+            <p *ngIf="!task.description" class="text-gray-500">Add a more detailed description...</p>
           </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex justify-end gap-2 mt-6">
-          <button
-            (click)="closeDatePicker()"
-            class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors">
-            Hủy
-          </button>
-          <button
-            (click)="saveDateTime()"
-            class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-            Xác nhận
-          </button>
+        <!-- Activity -->
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <i class="fas fa-list-ul text-gray-500"></i>
+            <h3 class="font-semibold">Activity</h3>
+          </div>
+          <!-- Activity list would go here -->
         </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="w-48">
+        <h4 class="text-xs font-medium uppercase text-gray-600 mb-2">Add to card</h4>
+        
+        <!-- Quick Actions -->
+        <div class="space-y-2">
+          <!-- Due Date -->
+          <div class="relative">
+            <button
+              (click)="openDatePicker()"
+              class="w-full flex items-center gap-2 px-3 py-1.5 text-gray-700 hover:bg-gray-100 rounded-md transition-colors text-sm"
+            >
+              <i class="far fa-clock w-4"></i>
+              <span>{{task.deadline ? 'Change due date' : 'Add due date'}}</span>
+            </button>
+          </div>
+
+          <!-- Priority -->
+          <div class="relative">
+            <button
+              (click)="startEditing('priority')"
+              class="w-full flex items-center gap-2 px-3 py-1.5 text-gray-700 hover:bg-gray-100 rounded-md transition-colors text-sm"
+            >
+              <i class="fas fa-flag w-4"></i>
+              <span>Priority</span>
+              <div class="ml-auto" [ngClass]="{
+                'text-red-500': task.priority === 'HIGH',
+                'text-yellow-500': task.priority === 'MEDIUM',
+                'text-blue-500': task.priority === 'LOW'
+              }">●</div>
+            </button>
+            
+            <select
+              *ngIf="editingField === 'priority'"
+              [(ngModel)]="selectedPriority"
+              (change)="saveField('priority')"
+              (blur)="editingField = null"
+              class="absolute inset-0 w-full opacity-0 cursor-pointer"
+            >
+              <option value="HIGH">High</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="LOW">Low</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Date Picker Modal -->
+  <div *ngIf="showDatePicker" class="fixed inset-0 bg-black/50 flex justify-center items-center z-[60]">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-[320px]">
+      <h3 class="text-lg font-semibold mb-4">Due Date</h3>
+      
+      <!-- Quick Options -->
+      <div class="grid grid-cols-2 gap-2 mb-4">
+        <button
+          *ngFor="let option of quickDateOptions"
+          (click)="setQuickDate(option.value)"
+          class="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md border transition-colors"
+        >
+          {{option.label}}
+        </button>
+      </div>
+
+      <!-- Custom DateTime -->
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Date</label>
+          <input
+            type="date"
+            [(ngModel)]="selectedDate"
+            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#441752]"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Time</label>
+          <input
+            type="time"
+            [(ngModel)]="selectedTime"
+            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#441752]"
+          />
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-2 mt-6">
+        <button
+          *ngIf="task.deadline"
+          (click)="removeDeadline()"
+          class="px-4 py-2 text-sm text-red-600 hover:text-red-700"
+        >
+          Remove
+        </button>
+        <button
+          (click)="closeDatePicker()"
+          class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="saveDateTime()"
+          class="px-4 py-2 text-sm bg-[#441752] text-white rounded-md hover:bg-opacity-90"
+        >
+          Save
+        </button>
       </div>
     </div>
   </div>

@@ -1,0 +1,67 @@
+<div class="p-6">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-[#441752]">Your boards</h1>
+    <p class="text-gray-600 mt-1">View and manage all your boards</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center h-40">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#441752]"></div>
+  </div>
+
+  <!-- Boards Grid -->
+  <div *ngIf="!isLoading" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <!-- Board Card -->
+    <div *ngFor="let board of boards"
+         (click)="navigateToBoard(board.id)"
+         class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 cursor-pointer border border-gray-200 group">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="font-semibold text-[#441752] group-hover:text-[#8174A0] transition-colors">
+            {{ board.name }}
+          </h3>
+          <p *ngIf="board.description" class="text-sm text-gray-600 mt-1 line-clamp-2">
+            {{ board.description }}
+          </p>
+        </div>
+        <button class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100">
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+      </div>
+
+      <!-- Board Stats -->
+      <div class="flex items-center gap-4 mt-4 text-sm text-gray-500">
+        <div class="flex items-center gap-1">
+          <i class="fas fa-list-ul"></i>
+          <span>{{ board.stages.length || 0 }} lists</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <i class="fas fa-tasks"></i>
+          <span>{{ board.tasks.length || 0 }} tasks</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create New Board Card -->
+    <div (click)="openCreateBoardModal()"
+         class="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 hover:border-[#441752] transition-colors p-4 cursor-pointer flex flex-col items-center justify-center text-gray-500 hover:text-[#441752] min-h-[140px]">
+      <i class="fas fa-plus text-2xl mb-2"></i>
+      <span class="font-medium">Create new board</span>
+    </div>
+  </div>
+
+  <!-- No Boards State -->
+  <div *ngIf="!isLoading && boards.length === 0" 
+       class="flex flex-col items-center justify-center h-40 text-gray-500">
+    <i class="fas fa-clipboard-list text-3xl mb-2"></i>
+    <p class="text-lg font-medium">No boards yet</p>
+    <p class="text-sm mt-1">Create your first board to get started</p>
+  </div>
+
+  <!-- Create Board Modal -->
+  <app-create-board-modal 
+    *ngIf="isCreateBoardModalOpen"
+    (close)="isCreateBoardModalOpen = false"
+    (boardCreated)="loadBoards()"
+  ></app-create-board-modal>
+</div> 

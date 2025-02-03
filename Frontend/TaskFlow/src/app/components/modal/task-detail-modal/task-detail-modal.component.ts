@@ -10,6 +10,7 @@ import { TaskServiceService } from 'src/app/services/task-service.service';
 })
 export class TaskDetailModalComponent {
   @Input() task!: TaskResponse;
+  @Input() boardId!: number;
   @Output() close = new EventEmitter<void>();
   @Output() taskUpdated = new EventEmitter<void>();
 
@@ -17,13 +18,14 @@ export class TaskDetailModalComponent {
   @ViewChild('descInput') descInput!: ElementRef;
   
   editingField: string | null = null;
+  isEditing: boolean = false;
 
   editForm = new FormGroup({
-    title: new FormControl(''),
-    description: new FormControl(''),
-    deadline: new FormControl(''),
-    priority: new FormControl(''),
-    status: new FormControl('')
+    title: new FormControl<string>(''),
+    description: new FormControl<string>(''),
+    deadline: new FormControl<string>(''),
+    priority: new FormControl<string>(''),
+    status: new FormControl<string>('')
   });
 
   showDatePicker: boolean = false;
@@ -32,13 +34,23 @@ export class TaskDetailModalComponent {
   selectedDate: string = '';
   selectedTime: string = '';
   combinedDateTime: string = '';
-  isEditing: boolean = false;
+
+  quickDateOptions = [
+    {value: 'today' as const, label: 'Today'},
+    {value: 'tomorrow' as const, label: 'Tomorrow'},
+    {value: 'nextWeek' as const, label: 'Next Week'},
+    {value: 'nextMonth' as const, label: 'Next Month'}
+  ];
 
   constructor(private taskService: TaskServiceService) {}
 
   ngOnInit() {
+    this.initializeForm();
+  }
+
+  private initializeForm() {
     this.selectedPriority = this.task.priority || 'LOW';
-    this.selectedStatus = this.task.status || 'PENDING';
+    this.selectedStatus = this.task.status === 'COMPLETED' ? 'COMPLETED' : 'IN_PROGRESS';
     if (this.task.deadline) {
       const date = new Date(this.task.deadline);
       this.selectedDate = this.formatDateForInput(date);
@@ -49,44 +61,33 @@ export class TaskDetailModalComponent {
       title: this.task.title,
       description: this.task.description,
       priority: this.task.priority,
-      status: this.task.status
+      status: this.selectedStatus
     });
   }
 
-  onClose() {
-    this.close.emit();
+  updateTask(updates: Partial<TaskResponse> = {}) {
+    const baseUpdate = {
+      ...this.task,
+      ...updates,
+      boardId: this.boardId,
+      stageId: this.task.stage?.id || null,
+      deadline: this.combinedDateTime ? this.combinedDateTime.replace(" ", "T") : null
+    };
+
+    this.taskService.updateTask(baseUpdate).subscribe({
+      next: (updatedTask: TaskResponse) => {
+        this.task = updatedTask;
+        this.taskUpdated.emit();
+        this.editingField = null;
+        this.showDatePicker = false;
+      },
+      error: (error: Error) => {
+        console.error('Error updating task:', error);
+      }
+    });
   }
 
-  toggleEdit() {
-    this.isEditing = !this.isEditing;
-  }
-
-  saveChanges() {
-    if (this.editForm.valid) {
-      const updatedTask = {
-        ...this.task,
-        ...this.editForm.value,
-        deadline: this.combinedDateTime ? this.combinedDateTime.replace(" ", "T") : null,
-        priority: this.selectedPriority,
-        status: this.selectedStatus
-      };
-
-    //   this.taskService.updateTask(updatedTask).subscribe(() => {
-    //     this.taskUpdated.emit();
-    //     this.isEditing = false;
-    //   });
-    }
-  }
-
-  // Reuse your existing date/time handling methods
-  openDatePicker(): void {
-    this.showDatePicker = true;
-  }
-
-  closeDatePicker(): void {
-    this.showDatePicker = false;
-  }
-
+  // Date handling methods
   private formatDateForInput(date: Date): string {
     return date.toISOString().split('T')[0];
   }
@@ -99,6 +100,33 @@ export class TaskDetailModalComponent {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
   }
 
+  // UI handlers
+  saveField(field: string) {
+    if (this.editForm.valid) {
+      const updates = {
+        [field]: this.editForm.get(field)?.value
+      };
+      if (field === 'priority') updates['priority'] = this.selectedPriority;
+      if (field === 'status') updates['status'] = this.selectedStatus;
+      
+      this.updateTask(updates);
+    }
+  }
+
+  saveDateTime() {
+    if (this.selectedDate && this.selectedTime) {
+      const dateTime = new Date(this.selectedDate + 'T' + this.selectedTime);
+      this.combinedDateTime = this.formatDateTime(dateTime);
+      this.updateTask({ deadline: this.combinedDateTime });
+    }
+    this.showDatePicker = false;
+  }
+
+  // Other UI methods
+  onClose() { this.close.emit(); }
+  openDatePicker() { this.showDatePicker = true; }
+  closeDatePicker() { this.showDatePicker = false; }
+
   startEditing(field: string) {
     this.editingField = field;
     this.editForm.patchValue({
@@ -110,24 +138,6 @@ export class TaskDetailModalComponent {
       if (field === 'title') this.titleInput?.nativeElement.focus();
       if (field === 'description') this.descInput?.nativeElement.focus();
     });
-  }
-
-  saveField(field: string) {
-    if (this.editForm.valid) {
-      const updates: any = {
-        ...this.task,
-        [field]: this.editForm.get(field)?.value
-      };
-      
-      if (field === 'priority') updates.priority = this.selectedPriority;
-      if (field === 'status') updates.status = this.selectedStatus;
-      
-      // this.taskService.updateTask(updates).subscribe(() => {
-      //   this.task = updates;
-      //   this.editingField = null;
-      // });
-    }
-    this.editingField = null;
   }
 
   setQuickDate(option: 'today' | 'tomorrow' | 'nextWeek' | 'nextMonth'): void {
@@ -157,21 +167,39 @@ export class TaskDetailModalComponent {
     this.saveDateTime();
   }
 
-  saveDateTime(): void {
-    if (this.selectedDate && this.selectedTime) {
-      const dateTime = new Date(this.selectedDate + 'T' + this.selectedTime);
-      this.combinedDateTime = this.formatDateTime(dateTime);
-      
-      const updates = {
-        ...this.task,
-        deadline: this.combinedDateTime.replace(" ", "T")
-      };
+  toggleEdit() {
+    this.isEditing = !this.isEditing;
+  }
 
-      // this.taskService.updateTask(updates).subscribe(() => {
-      //   this.task = updates;
-      //   this.showDatePicker = false;
-      // });
+  isOverdue(): boolean {
+    if (!this.task.deadline) return false;
+    const deadline = new Date(this.task.deadline);
+    return deadline < new Date() && this.task.status !== 'COMPLETED';
+  }
+
+  removeDeadline(event?: Event) {
+    if (event) {
+      event.stopPropagation(); // Prevent opening the date picker when clicking remove
     }
+    this.combinedDateTime = '';
+    this.selectedDate = '';
+    this.selectedTime = '';
+    this.updateTask({ deadline: null });
     this.showDatePicker = false;
+  }
+
+  toggleComplete() {
+    const newStatus = this.task.status === 'COMPLETED' ? 'IN_PROGRESS' : 'COMPLETED';
+    this.updateTask({ status: newStatus });
+  }
+
+  updateTaskStatus(isChecked: boolean) {
+    const newStatus = isChecked ? 'COMPLETED' : 'IN_PROGRESS';
+    this.updateTask({ status: newStatus });
+  }
+
+  handleCheckboxChange(event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    this.updateTaskStatus(checkbox.checked);
   }
 } 

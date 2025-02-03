@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BoardResponse } from 'src/app/responses/ServerResponse';
 import { TaskServiceService } from 'src/app/services/task-service.service';
+import { BoardService } from 'src/app/services/board.service';
 
 @Component({
   selector: 'app-create-task-modal',
@@ -21,31 +22,46 @@ export class CreateTaskModalComponent implements OnInit{
   createForm!:FormGroup;
   boardList:BoardResponse[] = [];
   selectedStatus: string = 'PENDING';
-  constructor(readonly fb:FormBuilder, readonly ts:TaskServiceService){}
+  quickDateOptions: Array<{label: string, value: 'today' | 'tomorrow' | 'nextWeek' | 'nextMonth'}> = [
+    { label: 'Today', value: 'today' },
+    { label: 'Tomorrow', value: 'tomorrow' },
+    { label: 'Next Week', value: 'nextWeek' },
+    { label: 'Next Month', value: 'nextMonth' }
+  ];
+  selectedStageId: number | null = null;
+  stages: any[] = [];
+  constructor(readonly fb:FormBuilder, readonly ts:TaskServiceService, private boardService: BoardService){}
 
   ngOnInit(): void {
     this.createForm = this.fb.group({
-      title :[''],
-      description:[''],
-      deadline:[''],
-      priority:[''],
-      status: [''],
-      boardId:[''],
-      stageId:['']
-    })
+      title: [''],
+      description: [''],
+      deadline: [''],
+      priority: [''],
+      boardId: [''],
+      stageId: [null]  // Initialize with null
+    });
+
+    // Get stages for the board
+    this.boardService.getBoardById(this.boardId).subscribe(board => {
+      this.stages = board.stages;
+      this.selectedStageId = this.stageId || null;
+      // Update form's stageId when stages are loaded
+      this.createForm.patchValue({ stageId: this.selectedStageId });
+    });
   }
 
-  submitCreateForm(){
-    if(this.createForm.valid){
-      this.createForm.patchValue({
+  submitCreateForm() {
+    if(this.createForm.valid) {
+      const formData = {
+        ...this.createForm.value,
         deadline: this.combinedDateTime.replace(" ","T"),
         priority: this.selectedPriority,
-        status: this.selectedStatus,
         boardId: this.boardId,
-        stageId: this.stageId
-      });
+        stageId: this.selectedStageId  // Make sure stageId is included
+      };
 
-      this.ts.createTask(this.createForm.value).subscribe(res => {
+      this.ts.createTask(formData).subscribe(res => {
         console.log(res);
         this.close.emit();
       });
@@ -112,8 +128,7 @@ export class CreateTaskModalComponent implements OnInit{
     return isoString;
   }
 
-setQuickDate(option: 'today' | 'tomorrow' | 'nextWeek' | 'nextMonth'): void {
-  const now = new Date();
+setQuickDate(option: 'today' | 'tomorrow' | 'nextWeek' | 'nextMonth') {
   let date = new Date();
 
   switch (option) {
