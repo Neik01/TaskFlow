@@ -37,6 +37,9 @@ public class Board {
     private List<BoardStage> stages;
     // Getters and setters
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workspace_id")
+    private Workspace workspace;
 
     public void addStage(BoardStage stage){
         if (this.stages==null){

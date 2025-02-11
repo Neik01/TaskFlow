@@ -3,7 +3,7 @@ package com.ntk.TaskFlow.Controller;
 import com.ntk.TaskFlow.DTO.Request.ChangeTaskPosReq;
 import com.ntk.TaskFlow.DTO.Request.CreateTaskReq;
 import com.ntk.TaskFlow.DTO.Request.UpdateTaskReq;
-import com.ntk.TaskFlow.DTO.TaskDTO;
+import com.ntk.TaskFlow.DTO.Entities.TaskDTO;
 import com.ntk.TaskFlow.Entity.Task;
 import com.ntk.TaskFlow.Entity.TaskPriority;
 import com.ntk.TaskFlow.Mapper.ProjectMapper;

@@ -17,7 +17,7 @@ import { BoardComponent } from './components/board/board.component';
 import { HeaderComponent } from './components/header/header.component';
 import { CreateBoardModalComponent } from './components/modal/create-board-modal/create-board-modal.component';
 import { BoardListComponent } from './components/board-list/board-list.component';
-
+import { WorkspaceService } from './services/workspace.service';
 
 @NgModule({
   declarations: [
@@ -43,7 +43,9 @@ import { BoardListComponent } from './components/board-list/board-list.component
     HttpClientModule,
     DragDropModule
   ],
-  providers: [],
+  providers: [
+    WorkspaceService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

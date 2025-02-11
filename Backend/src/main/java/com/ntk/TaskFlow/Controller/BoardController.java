@@ -1,7 +1,7 @@
 package com.ntk.TaskFlow.Controller;
 
 
-import com.ntk.TaskFlow.DTO.BoardDTO;
+import com.ntk.TaskFlow.DTO.Entities.BoardDTO;
 import com.ntk.TaskFlow.DTO.Request.ChangeProjectStagePosReq;
 import com.ntk.TaskFlow.DTO.Request.CreateBoardReq;
 import com.ntk.TaskFlow.DTO.Request.CreateStagesReq;
@@ -26,10 +26,15 @@ public class BoardController {
     private final BoardService boardService;
     private final ProjectMapper mapper;
     private final BoardStageService projectStageService;
+
     @PostMapping
-    public ResponseEntity<BoardDTO> createBoard(@RequestBody CreateBoardReq boardReq) {
-        Board createdBoard = boardService.createBoard(boardReq.name(),boardReq.description());
-        return new ResponseEntity<>(mapper.mapBoardToDTO(createdBoard), HttpStatus.CREATED);
+    public ResponseEntity<?> createBoard(@RequestBody CreateBoardReq boardReq) {
+        try {
+            Board createdBoard = boardService.createBoard(boardReq.name(),boardReq.description(),boardReq.wsId());
+            return new ResponseEntity<>(mapper.mapBoardToDTO(createdBoard), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping

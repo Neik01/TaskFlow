@@ -1,7 +1,7 @@
 package com.ntk.TaskFlow.Controller;
 
 
-import com.ntk.TaskFlow.DTO.CollaboratorDTO;
+import com.ntk.TaskFlow.DTO.Entities.CollaboratorDTO;
 import com.ntk.TaskFlow.Entity.Collaborator;
 import com.ntk.TaskFlow.Mapper.ProjectMapper;
 import com.ntk.TaskFlow.Service.CollaboratorService;

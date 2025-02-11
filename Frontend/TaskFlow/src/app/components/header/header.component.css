@@ -1,0 +1,4 @@
+/* Add styles for dropdown */
+.relative:hover .absolute {
+  display: block; /* Show dropdown on hover */
+}

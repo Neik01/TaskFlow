@@ -2,8 +2,11 @@ package com.ntk.TaskFlow.Service;
 
 import com.ntk.TaskFlow.Entity.Board;
 import com.ntk.TaskFlow.Entity.BoardStage;
+import com.ntk.TaskFlow.Entity.Workspace;
 import com.ntk.TaskFlow.Repository.BoardRepository;
 import com.ntk.TaskFlow.Repository.BoardStageRepository;
+import com.ntk.TaskFlow.Repository.WorkspaceRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +19,19 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardStageRepository boardStageRepository;
+    private final WorkspaceRepository workspaceRepository;
 
-    public Board createBoard(String boardName, String boardDescription){
+    public Board createBoard(String boardName, String boardDescription, int wsId){
+        Workspace ws = this.workspaceRepository.findById(wsId)
+                .orElseThrow(()-> new EntityNotFoundException("Cannot find workspace with id: "+ wsId));
         Board newBoard = new Board();
         newBoard.setName(boardName);
         newBoard.setDescription(boardDescription);
+        newBoard.setWorkspace(ws);
+
+        ws.addBoard(newBoard);
+        this.workspaceRepository.save(ws);
+
         return this.boardRepository.save(newBoard);
     }
     public List<Board> getAllBoards() {

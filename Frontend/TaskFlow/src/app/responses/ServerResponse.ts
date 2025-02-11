@@ -17,6 +17,13 @@ export interface Stage {
     name: string;
     position:number;
 }
+
+export interface Workspace {
+    id: number; // Unique identifier for the workspace
+    name: string; // Name of the workspace
+    description?: string; // Optional description of the workspace
+    boards: BoardResponse[]; // List of boards associated with the workspace
+}
 export interface BoardResponse {
     id: number;
     name: string;
