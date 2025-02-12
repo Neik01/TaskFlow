@@ -11,8 +11,9 @@ const routes: Routes = [
     {path:"", component:TasklistComponent},
     {path:"search",component:TasklistComponent},
     {path:"search/:keyword",component:TasklistComponent},
-    {path:"boards",component:BoardListComponent},
-    {path:"boards/:id",component:BoardComponent}
+    {path:"workspace/:wsId",component:BoardListComponent},
+    {path:"workspace/:wsId/boards/:bId",component:BoardComponent}
+   
   ]},
   
 ];

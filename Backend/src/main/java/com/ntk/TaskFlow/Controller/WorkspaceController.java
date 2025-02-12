@@ -1,6 +1,8 @@
 package com.ntk.TaskFlow.Controller;
 
+import com.ntk.TaskFlow.DTO.Entities.WorkspaceDTO;
 import com.ntk.TaskFlow.Entity.Workspace;
+import com.ntk.TaskFlow.Mapper.ProjectMapper;
 import com.ntk.TaskFlow.Service.WorkspaceService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,31 +19,31 @@ import java.util.List;
 public class WorkspaceController {
 
     private final WorkspaceService workspaceService;
-
+    private final ProjectMapper mapper;
 
     @GetMapping
-    public List<Workspace> getAllWorkspaces() {
-        return workspaceService.getAllWorkspaces();
+    public List<WorkspaceDTO> getAllWorkspaces() {
+        return mapper.mapListWorkspaceToListDTO(workspaceService.getAllWorkspaces());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Workspace> getWorkspaceById(@PathVariable int id) {
+    public ResponseEntity<WorkspaceDTO> getWorkspaceById(@PathVariable int id) {
         return workspaceService.getWorkspaceById(id)
-                .map(ResponseEntity::ok)
+                .map(ws -> new ResponseEntity<WorkspaceDTO>(this.mapper.mapWorkspaceToDto(ws),HttpStatus.OK))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Workspace> createWorkspace(@RequestBody Workspace workspace) {
+    public ResponseEntity<WorkspaceDTO> createWorkspace(@RequestBody Workspace workspace) {
         Workspace createdWorkspace = workspaceService.createWorkspace(workspace);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdWorkspace);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.mapWorkspaceToDto(createdWorkspace));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Workspace> updateWorkspace(@PathVariable int id, @RequestBody Workspace workspaceDetails) {
+    public ResponseEntity<WorkspaceDTO> updateWorkspace(@PathVariable int id, @RequestBody Workspace workspaceDetails) {
         try {
             Workspace updatedWorkspace = workspaceService.updateWorkspace(id, workspaceDetails);
-            return ResponseEntity.ok(updatedWorkspace);
+            return ResponseEntity.ok(mapper.mapWorkspaceToDto(updatedWorkspace));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

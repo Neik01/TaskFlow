@@ -32,7 +32,7 @@ export class BoardComponent implements OnInit{
   
     ngOnInit() {
   
-        this.boardService.getBoardById(this.route.snapshot.params['id']).subscribe((data:BoardResponse) => {
+        this.boardService.getBoardById(this.route.snapshot.params['bId']).subscribe((data:BoardResponse) => {
           this.handleBoardResponse(data);
           
         });
