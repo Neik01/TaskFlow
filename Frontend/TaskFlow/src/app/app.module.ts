@@ -19,6 +19,7 @@ import { CreateBoardModalComponent } from './components/modal/create-board-modal
 import { BoardListComponent } from './components/board-list/board-list.component';
 import { WorkspaceService } from './services/workspace.service';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,6 +46,7 @@ import { WorkspaceService } from './services/workspace.service';
   ],
   providers: [
     WorkspaceService,
+   
   ],
   bootstrap: [AppComponent]
 })

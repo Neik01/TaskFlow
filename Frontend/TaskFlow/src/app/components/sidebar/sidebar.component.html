@@ -30,7 +30,7 @@
     <!-- Core Features -->
     <div class="px-3 py-2">
       <a *ngFor="let item of mainMenuItems" 
-         [routerLink]="item.route"
+         [routerLink]="item.route + this.workspaceId"
          class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/10 cursor-pointer text-white/90 hover:text-white backdrop-blur-sm text-sm">
         <i [class]="item.icon"></i>
         <span>{{ item.label }}</span>
@@ -51,7 +51,7 @@
     <div class="px-3 pt-4">
       <div class="text-xs font-semibold text-gray-400 mb-2">Your boards</div>
       <div *ngFor="let board of boards" 
-           [routerLink]="['/boards', board.id]"
+           [routerLink]="['/workspace', board.id]"
            class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/10 cursor-pointer text-white/90 hover:text-white backdrop-blur-sm text-sm">
         <i class="fas fa-clipboard text-gray-400"></i>
         <span>{{ board.name }}</span>

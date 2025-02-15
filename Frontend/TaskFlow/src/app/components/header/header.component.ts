@@ -3,6 +3,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { ViewChild } from '@angular/core';
 import { WorkspaceService } from 'src/app/services/workspace.service';
 import { Workspace } from 'src/app/responses/ServerResponse';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -14,15 +15,25 @@ export class HeaderComponent implements OnInit {
   
   workspaces: Workspace[] = [];
   selectedWorkspaceId: number | null = null;
+  selectedWorkspaceName: string = ""
   isCreateBoardModalOpen = false;
   isDropdownOpen = false; // Track dropdown visibility
 
-  constructor(private workspaceService: WorkspaceService,
-    private el: ElementRef
+  constructor(
+    private workspaceService: WorkspaceService,
+    private el: ElementRef,
+    private route: ActivatedRoute, // Inject ActivatedRoute
   ) {}
 
   ngOnInit() {
     this.loadWorkspaces();
+    this.workspaceService.getWorkspaceId.subscribe(id => {
+      this.selectedWorkspaceId = id
+      console.log(id);
+      
+      const selectedWorkspace = this.workspaces.find(w => w.id === this.selectedWorkspaceId);
+      this.selectedWorkspaceName = selectedWorkspace ? selectedWorkspace.name:'Select workspace'
+    })
   }
 
   loadWorkspaces() {
@@ -46,6 +57,7 @@ export class HeaderComponent implements OnInit {
 
   onWorkspaceChange(workspaceId: number) {
     this.selectedWorkspaceId = workspaceId;
+    this.workspaceService.setWorkspaceId(workspaceId); // Set the workspace ID in the service
     this.isDropdownOpen = false; // Close dropdown on selection
     // Handle workspace change logic here
   }
@@ -69,10 +81,5 @@ export class HeaderComponent implements OnInit {
     this.sidebar?.loadBoards(); // Use optional chaining to safely call loadBoards
   }
 
-  getSelectedWorkspaceName(): string {
-    const selectedWorkspace = this.workspaces.find(w => w.id === this.selectedWorkspaceId);
-    return selectedWorkspace ? selectedWorkspace.name : 'Select Workspace';
-  }
 
-  // Add any header-related functionality here
 } 

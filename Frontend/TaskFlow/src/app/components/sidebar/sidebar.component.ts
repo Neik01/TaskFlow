@@ -1,6 +1,8 @@
 import { Component, ElementRef, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
 import { BoardService } from 'src/app/services/board.service';
 import { BoardResponse } from 'src/app/responses/ServerResponse';
+import { ActivatedRoute } from '@angular/router';
+import { WorkspaceService } from 'src/app/services/workspace.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,13 +15,14 @@ export class SidebarComponent implements OnInit {
   isSearchModalOpen = false;
   boards: BoardResponse[] = [];
   isCollapsed = false;
+  workspaceId = 0;
   @Output() collapsedChange = new EventEmitter<boolean>();
 
   mainMenuItems = [
     {
       label: 'Boards',
       icon: 'fas fa-columns text-gray-400',
-      route: '/boards'
+      route: '/workspace/'
     },
     {
       label: 'Members',
@@ -46,11 +49,14 @@ export class SidebarComponent implements OnInit {
 
   constructor(
     private elementRef: ElementRef,
-    private boardService: BoardService
+    private boardService: BoardService,
+    private route: ActivatedRoute,
+    private ws: WorkspaceService
   ) {}
 
   ngOnInit() {
     this.loadBoards();
+    this.ws.getWorkspaceId.subscribe(id => this.workspaceId = id)
   }
 
   loadBoards() {

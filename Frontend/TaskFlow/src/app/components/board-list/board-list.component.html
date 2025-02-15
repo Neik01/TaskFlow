@@ -62,6 +62,6 @@
   <app-create-board-modal 
     *ngIf="isCreateBoardModalOpen"
     (close)="isCreateBoardModalOpen = false"
-    (boardCreated)="loadBoards(this.wsId)"
+    (boardCreated)="loadBoards(this.workspace.id)"
   ></app-create-board-modal>
 </div> 

@@ -4,6 +4,7 @@ import { BoardResponse, Workspace } from 'src/app/responses/ServerResponse';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkspaceService } from 'src/app/services/workspace.service';
 
+
 @Component({
   selector: 'app-board-list',
   templateUrl: './board-list.component.html',
@@ -13,34 +14,41 @@ export class BoardListComponent implements OnInit {
   boards: BoardResponse[] = [];
   isLoading = true;
   isCreateBoardModalOpen = false;
-  wsId: number =0;
-  workspace!: Workspace
+  workspace!: Workspace;
+
   constructor(
     private boardService: BoardService,
     private router: Router,
     private route: ActivatedRoute,
-    private ws: WorkspaceService
+    private ws: WorkspaceService,
+
   ) {}
 
   ngOnInit() {
+    //workspace id
+    const id =this.route.snapshot.params['wsId'];
+    if(id){
+      this.ws.setWorkspaceId(id);
+    }
 
-    this.route.paramMap.subscribe(value =>{
-      if (value.get('wsId')){
-
-        this.wsId=Number.parseInt(value.get('wsId')!)
-        this.loadBoards(this.wsId);
+    this.route.params.subscribe(params =>{
+      const wsId = params['wsId'] 
+      if(wsId){
+        this.loadBoards(wsId);
+        
       }
-    });
-
+    })
   }
 
-  loadBoards(id:number) {
+  loadBoards(id: number) {
     this.isLoading = true;
     this.ws.getWorkspaceById(id).subscribe({
       next: (ws) => {
-        this.workspace = ws
+        this.workspace = ws;
         this.boards = ws.boards;
         this.isLoading = false;
+        this.ws.setWorkspaceId(ws.id);
+        
       },
       error: (error) => {
         console.error('Error loading boards:', error);
@@ -50,9 +58,7 @@ export class BoardListComponent implements OnInit {
   }
 
   navigateToBoard(boardId: number) {
-    
-    
-    this.router.navigate(['/workspace',this.wsId,'boards', boardId]);
+    this.router.navigate(['/workspace', this.workspace.id, 'boards', boardId]);
   }
 
   openCreateBoardModal() {
