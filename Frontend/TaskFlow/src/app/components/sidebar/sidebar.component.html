@@ -47,14 +47,14 @@
       </div>
     </div>
 
-    <!-- Your Boards -->
+    <!-- Your workspaces -->
     <div class="px-3 pt-4">
-      <div class="text-xs font-semibold text-gray-400 mb-2">Your boards</div>
-      <div *ngFor="let board of boards" 
-           [routerLink]="['/workspace', board.id]"
+      <div class="text-xs font-semibold text-gray-400 mb-2">Your workspaces</div>
+      <div *ngFor="let workspace of workspaces" 
+           [routerLink]="['/workspace', workspace.id]"
            class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/10 cursor-pointer text-white/90 hover:text-white backdrop-blur-sm text-sm">
         <i class="fas fa-clipboard text-gray-400"></i>
-        <span>{{ board.name }}</span>
+        <span>{{ workspace.name }}</span>
       </div>
       
       <!-- Show message if no boards -->

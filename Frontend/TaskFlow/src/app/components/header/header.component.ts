@@ -16,8 +16,8 @@ export class HeaderComponent implements OnInit {
   workspaces: Workspace[] = [];
   selectedWorkspaceId: number | null = null;
   selectedWorkspaceName: string = ""
-  isCreateBoardModalOpen = false;
   isDropdownOpen = false; // Track dropdown visibility
+  isCreateWorkspaceModalOpen = false;
 
   constructor(
     private workspaceService: WorkspaceService,
@@ -48,11 +48,11 @@ export class HeaderComponent implements OnInit {
   }
 
   openCreateBoardModal() {
-    this.isCreateBoardModalOpen = true;
+    this.isCreateWorkspaceModalOpen = true;
   }
 
   closeCreateBoardModal() {
-    this.isCreateBoardModalOpen = false;
+    this.isCreateWorkspaceModalOpen = false;
   }
 
   onWorkspaceChange(workspaceId: number) {

@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit, Output, EventEmitter } from '@angular/core';
 import { BoardService } from 'src/app/services/board.service';
-import { BoardResponse } from 'src/app/responses/ServerResponse';
+import { BoardResponse, Workspace } from 'src/app/responses/ServerResponse';
 import { ActivatedRoute } from '@angular/router';
 import { WorkspaceService } from 'src/app/services/workspace.service';
 
@@ -16,6 +16,7 @@ export class SidebarComponent implements OnInit {
   boards: BoardResponse[] = [];
   isCollapsed = false;
   workspaceId = 0;
+  workspaces:Workspace[] =[];
   @Output() collapsedChange = new EventEmitter<boolean>();
 
   mainMenuItems = [
@@ -56,7 +57,13 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit() {
     this.loadBoards();
+    this.loadWorkspaces();
     this.ws.getWorkspaceId.subscribe(id => this.workspaceId = id)
+  }
+
+
+  loadWorkspaces(){
+    this.ws.getAllWorkspaces().subscribe(ws => this.workspaces = ws)
   }
 
   loadBoards() {

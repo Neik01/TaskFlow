@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { BoardService } from 'src/app/services/board.service';
 import { BoardResponse, Workspace } from 'src/app/responses/ServerResponse';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,11 +10,11 @@ import { WorkspaceService } from 'src/app/services/workspace.service';
   templateUrl: './board-list.component.html',
   styleUrls: ['./board-list.component.css']
 })
-export class BoardListComponent implements OnInit {
+export class BoardListComponent implements OnInit,AfterViewInit {
   boards: BoardResponse[] = [];
   isLoading = true;
   isCreateBoardModalOpen = false;
-  workspace!: Workspace;
+  workspace: Workspace|null = null;
 
   constructor(
     private boardService: BoardService,
@@ -27,6 +27,8 @@ export class BoardListComponent implements OnInit {
   ngOnInit() {
     //workspace id
     const id =this.route.snapshot.params['wsId'];
+    console.log(id);
+    
     if(id){
       this.ws.setWorkspaceId(id);
     }
@@ -40,25 +42,30 @@ export class BoardListComponent implements OnInit {
     })
   }
 
-  loadBoards(id: number) {
+  ngAfterViewInit(): void {
+      
+  }
+
+  loadBoards(id: number|undefined) {
     this.isLoading = true;
-    this.ws.getWorkspaceById(id).subscribe({
-      next: (ws) => {
-        this.workspace = ws;
-        this.boards = ws.boards;
-        this.isLoading = false;
-        this.ws.setWorkspaceId(ws.id);
-        
-      },
-      error: (error) => {
-        console.error('Error loading boards:', error);
-        this.isLoading = false;
-      }
-    });
+    if(id)
+      this.ws.getWorkspaceById(id).subscribe({
+        next: (ws) => {
+          this.workspace = ws;
+          this.boards = ws.boards;
+          this.isLoading = false;
+          this.ws.setWorkspaceId(ws.id);
+          
+        },
+        error: (error) => {
+          console.error('Error loading boards:', error);
+          this.isLoading = false;
+        }
+      });
   }
 
   navigateToBoard(boardId: number) {
-    this.router.navigate(['/workspace', this.workspace.id, 'boards', boardId]);
+    this.router.navigate([`/workspace/${this.workspace?.id}/boards`, boardId]);
   }
 
   openCreateBoardModal() {

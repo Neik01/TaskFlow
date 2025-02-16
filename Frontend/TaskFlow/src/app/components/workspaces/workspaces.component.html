@@ -1,0 +1,8 @@
+<p>workspaces works!</p>
+
+<!-- Add this HTML to display the workspaces -->
+<div *ngFor="let workspace of workspaces">
+  <h3>{{ workspace.name }}</h3>
+  <p>{{ workspace.description }}</p>
+  <a [routerLink]="['/workspace', workspace.id]">View Workspace</a>
+</div>

@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 export class BoardComponent implements OnInit{
     columns:any[] = new Array(); 
     columnCounter = 3;
-    board!:BoardResponse;
+    board:BoardResponse|null = null;
     stages:any[] =[];
     newSectionName:string ='';
     isAddStage:boolean = false;
@@ -45,7 +45,7 @@ export class BoardComponent implements OnInit{
       
       // Sort tasks within each stage
       this.stages.forEach(stage => {
-        stage.tasks = this.board.tasks
+        stage.tasks = this.board?.tasks
           .filter(task => task.stage?.id === stage.id)
           .sort((a, b) => a.positionInStage - b.positionInStage);
       });
@@ -69,7 +69,7 @@ export class BoardComponent implements OnInit{
   
     addStage() {
       if (this.newSectionName.trim()) {
-        this.boardService.createStage(this.board.id, this.newSectionName).subscribe((data: BoardResponse) => {
+        this.boardService.createStage(this.board!.id, this.newSectionName).subscribe((data: BoardResponse) => {
           this.handleBoardResponse(data);
           this.newSectionName = '';
           this.isAddStage = false;
@@ -148,7 +148,7 @@ export class BoardComponent implements OnInit{
     closeTaskModal() {
       this.activeStage = null;
       // Refresh the project data after task creation
-      this.boardService.getBoardById(this.board.id).subscribe((data:BoardResponse) => {
+      this.boardService.getBoardById(this.board!.id).subscribe((data:BoardResponse) => {
         this.handleBoardResponse(data);
       });
     }
@@ -164,7 +164,7 @@ export class BoardComponent implements OnInit{
     onTaskUpdated() {
       this.closeTaskDetail();
       // Refresh your task list
-      this.boardService.getBoardById(this.board.id).subscribe((data:BoardResponse) => {
+      this.boardService.getBoardById(this.board!.id).subscribe((data:BoardResponse) => {
             this.handleBoardResponse(data);
       });
     }

@@ -1,7 +1,7 @@
 <div class="p-6">
   <div class="mb-6">
-    <h1 class="text-2xl font-bold text-[#441752]">{{this.workspace.name}}</h1>
-    <p class="text-gray-600 mt-1">{{this.workspace.description}}</p>
+    <h1 class="text-2xl font-bold text-[#441752]">{{this.workspace?.name}}</h1>
+    <p class="text-gray-600 mt-1">{{this.workspace?.description}}</p>
   </div>
 
   <!-- Loading State -->
@@ -62,6 +62,6 @@
   <app-create-board-modal 
     *ngIf="isCreateBoardModalOpen"
     (close)="isCreateBoardModalOpen = false"
-    (boardCreated)="loadBoards(this.workspace.id)"
+    (boardCreated)="loadBoards(this.workspace?.id)"
   ></app-create-board-modal>
 </div> 

@@ -1,5 +1,5 @@
 <div class="p-4 pb-0">
-    <h1 class="text-2xl font-bold mb-4">{{this.board.name}}</h1>
+    <h1 class="text-2xl font-bold mb-4">{{this.board?.name}}</h1>
     <!-- Column Container -->
     <div
       class="flex gap-6 overflow-x-auto min-h-[calc(100vh-120px)]"
@@ -161,7 +161,7 @@
        class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
   
         <app-create-task-modal
-          [boardId]="board.id"
+          [boardId]="board!.id"
           [stageId]="activeStage !== null ? +activeStage : -1"
           (close)="closeTaskModal()"
         >
@@ -173,7 +173,7 @@
   <app-task-detail-modal
     *ngIf="selectedTask"
     [task]="selectedTask"
-    [boardId]="board.id"
+    [boardId]="board!.id"
     (close)="selectedTask = null"
     (taskUpdated)="loadBoard()"
   ></app-task-detail-modal>

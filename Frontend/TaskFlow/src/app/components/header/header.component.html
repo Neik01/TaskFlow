@@ -41,8 +41,8 @@
   </div>
 </header>
 
-<app-create-board-modal 
-  *ngIf="isCreateBoardModalOpen"
-  (close)="closeCreateBoardModal()"
-  (boardCreated)="onBoardCreated()"
-></app-create-board-modal> 
+<app-create-workspace-modal 
+  *ngIf="isCreateWorkspaceModalOpen"
+  (close)="isCreateWorkspaceModalOpen = false"
+  (workspaceCreated)="loadWorkspaces()"
+></app-create-workspace-modal> 

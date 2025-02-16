@@ -18,6 +18,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { CreateBoardModalComponent } from './components/modal/create-board-modal/create-board-modal.component';
 import { BoardListComponent } from './components/board-list/board-list.component';
 import { WorkspaceService } from './services/workspace.service';
+import { WorkspacesComponent } from './components/workspaces/workspaces.component';
+import { CreateWorkspaceModalComponent } from './components/modal/create-workspace-modal/create-workspace-modal.component';
 
 
 @NgModule({
@@ -34,7 +36,9 @@ import { WorkspaceService } from './services/workspace.service';
     BoardComponent,
     HeaderComponent,
     CreateBoardModalComponent,
-    BoardListComponent
+    BoardListComponent,
+    WorkspacesComponent,
+    CreateWorkspaceModalComponent
   ],
   imports: [
     BrowserModule,
