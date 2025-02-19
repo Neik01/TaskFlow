@@ -16,7 +16,8 @@ export class SidebarComponent implements OnInit {
   boards: BoardResponse[] = [];
   isCollapsed = false;
   workspaceId = 0;
-  workspaces:Workspace[] =[];
+  workspaces: Workspace[] = [];
+  selectedWorkspace: Workspace | undefined = undefined;
   @Output() collapsedChange = new EventEmitter<boolean>();
 
   mainMenuItems = [
@@ -58,12 +59,21 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     this.loadBoards();
     this.loadWorkspaces();
-    this.ws.getWorkspaceId.subscribe(id => this.workspaceId = id)
+    this.ws.getWorkspaceId.subscribe(id => {
+      this.workspaceId = id;
+      this.updateSelectedWorkspace();
+    });
   }
 
+  loadWorkspaces() {
+    this.ws.getWorkspaceObserver.subscribe(workspaces => {
+      this.workspaces = workspaces;
+      this.updateSelectedWorkspace();
+    });
+  }
 
-  loadWorkspaces(){
-    this.ws.getAllWorkspaces().subscribe(ws => this.workspaces = ws)
+  updateSelectedWorkspace() {
+    this.selectedWorkspace = this.workspaces.find(w => w.id === this.workspaceId);
   }
 
   loadBoards() {
@@ -89,15 +99,15 @@ export class SidebarComponent implements OnInit {
     }
   }
 
-  close(){
-    
+  close() {
+    // Close modal logic if needed
   }
 
   openCreateModal() {
     this.isCreateModalOpen = true;
   }
 
-  openSearchModal(){
+  openSearchModal() {
     this.isSearchModalOpen = true;
   }
 

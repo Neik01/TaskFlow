@@ -5,6 +5,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { BoardResponse, TaskResponse } from 'src/app/responses/ServerResponse';
 import { TaskServiceService } from 'src/app/services/task-service.service';
 import { environment } from 'src/environments/environment';
+import { WorkspaceService } from 'src/app/services/workspace.service';
 
 @Component({
   selector: 'app-board',
@@ -28,10 +29,17 @@ export class BoardComponent implements OnInit{
   
     constructor(private route: ActivatedRoute, 
       private boardService: BoardService,
-      private ts:TaskServiceService) { }
+      private ts:TaskServiceService,
+      private ws: WorkspaceService
+    ) { }
   
     ngOnInit() {
-  
+        console.log(this.route.snapshot.params['wsId']);
+        
+        const id =this.route.snapshot.params['wsId'];
+        if(id){
+          this.ws.setWorkspaceId(+id);
+        }
         this.boardService.getBoardById(this.route.snapshot.params['bId']).subscribe((data:BoardResponse) => {
           this.handleBoardResponse(data);
           

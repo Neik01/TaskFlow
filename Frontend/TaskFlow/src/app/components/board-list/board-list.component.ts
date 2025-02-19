@@ -10,7 +10,7 @@ import { WorkspaceService } from 'src/app/services/workspace.service';
   templateUrl: './board-list.component.html',
   styleUrls: ['./board-list.component.css']
 })
-export class BoardListComponent implements OnInit,AfterViewInit {
+export class BoardListComponent implements OnInit{
   boards: BoardResponse[] = [];
   isLoading = true;
   isCreateBoardModalOpen = false;
@@ -27,10 +27,9 @@ export class BoardListComponent implements OnInit,AfterViewInit {
   ngOnInit() {
     //workspace id
     const id =this.route.snapshot.params['wsId'];
-    console.log(id);
-    
+
     if(id){
-      this.ws.setWorkspaceId(id);
+      this.ws.setWorkspaceId(+id);
     }
 
     this.route.params.subscribe(params =>{
@@ -42,9 +41,7 @@ export class BoardListComponent implements OnInit,AfterViewInit {
     })
   }
 
-  ngAfterViewInit(): void {
-      
-  }
+
 
   loadBoards(id: number|undefined) {
     this.isLoading = true;

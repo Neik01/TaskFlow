@@ -15,36 +15,35 @@ export class HeaderComponent implements OnInit {
   
   workspaces: Workspace[] = [];
   selectedWorkspaceId: number | null = null;
-  selectedWorkspaceName: string = ""
+  selectedWorkspaceName: string = "";
   isDropdownOpen = false; // Track dropdown visibility
   isCreateWorkspaceModalOpen = false;
 
   constructor(
     private workspaceService: WorkspaceService,
     private el: ElementRef,
-    private route: ActivatedRoute, // Inject ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
     this.loadWorkspaces();
     this.workspaceService.getWorkspaceId.subscribe(id => {
-      this.selectedWorkspaceId = id
-      console.log(id);
-      
-      const selectedWorkspace = this.workspaces.find(w => w.id === this.selectedWorkspaceId);
-      this.selectedWorkspaceName = selectedWorkspace ? selectedWorkspace.name:'Select workspace'
-    })
+      this.selectedWorkspaceId = id;
+      this.updateSelectedWorkspaceName();
+    });
   }
 
   loadWorkspaces() {
-    this.workspaceService.getAllWorkspaces().subscribe({
-      next: (workspaces) => {
-        this.workspaces = workspaces;
-      },
-      error: (error) => {
-        console.error('Error loading workspaces:', error);
-      }
+    this.workspaceService.getAllWorkspaces(); // Call to load workspaces
+    this.workspaceService.getWorkspaceObserver.subscribe(workspaces => {
+      this.workspaces = workspaces;
+      this.updateSelectedWorkspaceName(); // Update the selected workspace name whenever workspaces change
     });
+  }
+
+  updateSelectedWorkspaceName() {
+    const selectedWorkspace = this.workspaces.find(w => w.id === this.selectedWorkspaceId);
+    this.selectedWorkspaceName = selectedWorkspace ? selectedWorkspace.name : 'Select Workspace';
   }
 
   openCreateBoardModal() {
@@ -59,12 +58,10 @@ export class HeaderComponent implements OnInit {
     this.selectedWorkspaceId = workspaceId;
     this.workspaceService.setWorkspaceId(workspaceId); // Set the workspace ID in the service
     this.isDropdownOpen = false; // Close dropdown on selection
-    // Handle workspace change logic here
   }
 
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen; // Toggle dropdown visibility
-    
   }
 
   @HostListener('document:click', ['$event'])
@@ -72,7 +69,6 @@ export class HeaderComponent implements OnInit {
     // If click is outside the dropdown
     if (!this.el.nativeElement.contains(event.target)) {
       this.isDropdownOpen = false;
-    
     }
   }
 
@@ -80,6 +76,4 @@ export class HeaderComponent implements OnInit {
     // Refresh the sidebar component
     this.sidebar?.loadBoards(); // Use optional chaining to safely call loadBoards
   }
-
-
 } 

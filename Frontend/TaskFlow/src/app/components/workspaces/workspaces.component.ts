@@ -16,7 +16,9 @@ export class WorkspacesComponent implements OnInit {
   }
 
   loadWorkspaces() {
-    this.workspaceService.getAllWorkspaces().subscribe(data => {
+
+    this.workspaceService.getAllWorkspaces()
+    this.workspaceService.getWorkspaceObserver.subscribe(data => {
       this.workspaces = data; // Assign fetched workspaces to the component property
     });
   }

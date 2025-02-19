@@ -9,13 +9,15 @@ import { environment } from 'src/environments/environment';
 })
 export class WorkspaceService {
   private apiUrl = `${environment.apiUrl}/workspaces`; // Adjust the endpoint as necessary
-  private workspaceId: BehaviorSubject<number> = new BehaviorSubject(0);
-
+  private workspaceId: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  private workspaceList: BehaviorSubject<Workspace[]> = new BehaviorSubject<Workspace[]>([]);
   constructor(private http: HttpClient) {}
 
   // Get all workspaces
-  getAllWorkspaces(): Observable<Workspace[]> {
-    return this.http.get<Workspace[]>(this.apiUrl);
+  getAllWorkspaces() {
+    this.http.get<Workspace[]>(this.apiUrl).subscribe(data => {
+      this.workspaceList.next(data); // Publish the workspaces to the BehaviorSubject
+    });
   }
 
   // Get a specific workspace by ID
@@ -43,7 +45,13 @@ export class WorkspaceService {
     this.workspaceId.next(id)
   }
 
-  get getWorkspaceId() {
+  
+
+  get getWorkspaceId(): Observable<number> {
     return this.workspaceId.asObservable();
+  }
+
+  get getWorkspaceObserver(): Observable<Workspace[]> {
+    return this.workspaceList.asObservable();
   }
 } 

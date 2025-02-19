@@ -10,7 +10,7 @@
         T
       </div>
       <div>
-        <div class="font-semibold text-sm whitespace-nowrap">TaskFlow Workspace</div>
+        <div class="font-semibold text-sm whitespace-nowrap">{{ this.selectedWorkspace?.name}}</div>
         <div class="text-xs text-gray-400">Free</div>
       </div>
     </div>
@@ -59,7 +59,7 @@
       
       <!-- Show message if no boards -->
       <div *ngIf="boards.length === 0" class="text-xs text-gray-400 px-2 py-1.5">
-        No boards yet
+        No workspace yet
       </div>
     </div>
   </div>
